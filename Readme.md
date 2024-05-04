@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Tanya](https://up.htmlacademy.ru/ecmascript/23/user/443469).
-* Наставник: `Неизвестно`.
+* Наставник: [Yulia Volkova](https://htmlacademy.ru/profile/julie_volkova).
 
 ---
 
