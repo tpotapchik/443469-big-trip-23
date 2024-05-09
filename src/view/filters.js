@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
 import {FILTER_TYPES} from '../constans.js';
+import {createElement} from '../render.js';
 
 const createFilterItemTemplate = (type) => `
   <div class="trip-filters__filter">
@@ -9,10 +9,10 @@ const createFilterItemTemplate = (type) => `
 `;
 
 const createFiltersTemplate = () => `
-    <form class="trip-filters" action="#" method="get">
-      ${FILTER_TYPES.map((type) => createFilterItemTemplate(type)).join('').toLowerCase()}
-      <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>
+  <form class="trip-filters" action="#" method="get">
+    ${FILTER_TYPES.map((type) => createFilterItemTemplate(type)).join('').toLowerCase()}
+    <button class="visually-hidden" type="submit">Accept filter</button>
+  </form>
 `;
 
 export default class FiltersView {

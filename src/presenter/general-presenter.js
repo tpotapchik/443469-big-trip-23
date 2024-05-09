@@ -4,6 +4,7 @@ import FiltersView from '../view/filters.js';
 import TripInfoView from '../view/trip-info.js';
 import TripPointView from '../view/trip-point.js';
 import AddPointView from '../view/add-point.js';
+import EditPointView from '../view/edit-point.js';
 
 export default class GeneralPresenter {
   constructor() {
@@ -38,13 +39,16 @@ export default class GeneralPresenter {
     render(new AddPointView(), this.tripPointsContainer, RenderPosition.AFTERBEGIN);
   }
 
+  renderEditPoint() {
+    render(new EditPointView(), this.tripPointsContainer, RenderPosition.AFTERBEGIN);
+  }
+
   init() {
     this.renderTripInfo();
     this.renderSorting();
     this.renderFilters();
     this.renderTripPoint();
     this.renderAddPoint();
+    this.renderEditPoint();
   }
 }
-
-

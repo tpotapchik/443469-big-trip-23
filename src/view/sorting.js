@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
 import {SORTING_TYPES} from '../constans.js';
+import {createElement} from '../render.js';
 
 const createSortingItemTemplate = (type) => `
   <div class="trip-sort__item trip-sort__item--${type}">
@@ -9,9 +9,9 @@ const createSortingItemTemplate = (type) => `
 `;
 
 const createSortingTemplate = () => `
-    <form class="trip-events__trip-sort trip-sort" action="#" method="get">
-      ${SORTING_TYPES.map((type) => createSortingItemTemplate(type)).join('').toLowerCase()}
-    </form>
+  <form class="trip-events__trip-sort trip-sort" action="#" method="get">
+    ${SORTING_TYPES.map((type) => createSortingItemTemplate(type)).join('').toLowerCase()}
+  </form>
 `;
 
 export default class SortingView {
