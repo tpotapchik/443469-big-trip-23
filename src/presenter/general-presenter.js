@@ -3,6 +3,7 @@ import SortingView from '../view/sorting.js';
 import FiltersView from '../view/filters.js';
 import TripInfoView from '../view/trip-info.js';
 import TripPointView from '../view/trip-point.js';
+import AddPointView from '../view/add-point.js';
 
 export default class GeneralPresenter {
   constructor() {
@@ -33,11 +34,16 @@ export default class GeneralPresenter {
     }
   }
 
+  renderAddPoint() {
+    render(new AddPointView(), this.tripPointsContainer, RenderPosition.AFTERBEGIN);
+  }
+
   init() {
     this.renderTripInfo();
     this.renderSorting();
     this.renderFilters();
     this.renderTripPoint();
+    this.renderAddPoint();
   }
 }
 
