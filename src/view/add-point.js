@@ -1,4 +1,4 @@
-import {ID_IMAGES, OFFERS, EVENT_TYPES, DESTINATIONS} from '../constans.js';
+import {ID_IMAGES, OFFERS, EVENT_TYPES, DESTINATIONS} from '../constants.js';
 import {createElement} from '../render.js';
 import {createEventTypeTemplate, createOfferTemplate, createDestinationTemplate} from './event-form-elements.js';
 
@@ -78,7 +78,7 @@ const createAddPointTemplate = () => `
   </li>
 `;
 
-export default class AddPointView {
+export default class AddPoint {
   getTemplate() {
     return createAddPointTemplate();
   }

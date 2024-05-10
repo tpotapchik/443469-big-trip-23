@@ -1,4 +1,4 @@
-import {OFFERS, EVENT_TYPES, DESTINATIONS} from '../constans.js';
+import {OFFERS, EVENT_TYPES, DESTINATIONS} from '../constants.js';
 import {createElement} from '../render.js';
 import {createEventTypeTemplate, createOfferTemplate, createDestinationTemplate} from './event-form-elements.js';
 
@@ -71,7 +71,7 @@ const createEditPointTemplate = () => `
   </li>
 `;
 
-export default class EditPointView {
+export default class EditPoint {
   getTemplate() {
     return createEditPointTemplate();
   }

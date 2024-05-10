@@ -1,4 +1,4 @@
-import {FILTER_TYPES} from '../constans.js';
+import {FILTER_TYPES} from '../constants.js';
 import {createElement} from '../render.js';
 
 const createFilterItemTemplate = (type) => `
@@ -15,7 +15,7 @@ const createFiltersTemplate = () => `
   </form>
 `;
 
-export default class FiltersView {
+export default class Filters {
   getTemplate() {
     return createFiltersTemplate();
   }

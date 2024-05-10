@@ -1,4 +1,4 @@
-import {SORTING_TYPES} from '../constans.js';
+import {SORTING_TYPES} from '../constants.js';
 import {createElement} from '../render.js';
 
 const createSortingItemTemplate = (type) => `
@@ -14,7 +14,7 @@ const createSortingTemplate = () => `
   </form>
 `;
 
-export default class SortingView {
+export default class Sorting {
   getTemplate() {
     return createSortingTemplate();
   }

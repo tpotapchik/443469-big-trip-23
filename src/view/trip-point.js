@@ -40,7 +40,7 @@ const createTripPointTemplate = () => `
   </li>
 `;
 
-export default class TripPointView {
+export default class TripPoint {
   getTemplate() {
     return createTripPointTemplate();
   }

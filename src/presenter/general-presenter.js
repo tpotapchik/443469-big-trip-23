@@ -1,10 +1,10 @@
 import {render, RenderPosition} from '../render.js';
-import SortingView from '../view/sorting.js';
-import FiltersView from '../view/filters.js';
-import TripInfoView from '../view/trip-info.js';
-import TripPointView from '../view/trip-point.js';
-import AddPointView from '../view/add-point.js';
-import EditPointView from '../view/edit-point.js';
+import Sorting from '../view/sorting.js';
+import Filters from '../view/filters.js';
+import TripInfo from '../view/trip-info.js';
+import TripPoint from '../view/trip-point.js';
+import AddPoint from '../view/add-point.js';
+import EditPoint from '../view/edit-point.js';
 
 export default class GeneralPresenter {
   constructor() {
@@ -12,35 +12,35 @@ export default class GeneralPresenter {
     this.tripEventsSectionElement = document.querySelector('.trip-events');
     this.filtersSectionElement = document.querySelector('.trip-controls__filters');
 
-    this.tripPointsContainer = document.createElement('ul');
-    this.tripPointsContainer.classList.add('trip-events__list');
-    this.tripEventsSectionElement.appendChild(this.tripPointsContainer);
+    this.tripPointsContainerElement = document.createElement('ul');
+    this.tripPointsContainerElement.classList.add('trip-events__list');
+    this.tripEventsSectionElement.appendChild(this.tripPointsContainerElement);
   }
 
   renderTripInfo() {
-    render(new TripInfoView(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
+    render(new TripInfo(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
   }
 
   renderSorting() {
-    render(new SortingView(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+    render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
   renderFilters() {
-    render(new FiltersView(), this.filtersSectionElement);
+    render(new Filters(), this.filtersSectionElement);
   }
 
   renderTripPoint() {
     for (let i = 0; i < 3; i++) {
-      render(new TripPointView(), this.tripPointsContainer);
+      render(new TripPoint(), this.tripPointsContainerElement);
     }
   }
 
   renderAddPoint() {
-    render(new AddPointView(), this.tripPointsContainer, RenderPosition.AFTERBEGIN);
+    render(new AddPoint(), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
   }
 
   renderEditPoint() {
-    render(new EditPointView(), this.tripPointsContainer, RenderPosition.AFTERBEGIN);
+    render(new EditPoint(), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
   }
 
   init() {
