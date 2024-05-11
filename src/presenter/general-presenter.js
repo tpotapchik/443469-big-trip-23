@@ -27,7 +27,7 @@ export default class GeneralPresenter {
     render(new TripInfo(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
     render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
     render(new Filters(), this.filtersSectionElement);
-    render(new EditPoint(this.primePoints[2], this.primeDestinations, this.primeOffers), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
+    render(new EditPoint(this.primePoints[0], this.primeDestinations, this.primeOffers), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < this.primePoints.length; i++) {
       const tripPoint = new TripPoint(this.primePoints[i], this.primeDestinations, this.primeOffers);

@@ -19,9 +19,9 @@ const createTripPointTemplate = (point, destinations, offers) => {
   const createPointScheduleTemplate = (from, to) => `
     <div class="event__schedule">
     <p class="event__time">
-      <time class="event__start-time" datetime="${displayDateTime(from)}">${displayTime(to)}</time>
+      <time class="event__start-time" datetime="${displayDateTime(from)}">${displayTime(from)}</time>
       &mdash;
-      <time class="event__end-time" datetime="${displayDateTime(from)}">${displayTime(to)}</time>
+      <time class="event__end-time" datetime="${displayDateTime(to)}">${displayTime(to)}</time>
     </p>
     <p class="event__duration">${calculateDuration(from, to)}</p>
   </div>
