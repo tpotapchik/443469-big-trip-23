@@ -19,43 +19,19 @@ export default class GeneralPresenter {
     this.pointModel = pointModel;
   }
 
-  renderTripInfo() {
-    render(new TripInfo(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
-  }
-
-  renderSorting() {
-    render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
-  }
-
-  renderFilters() {
-    render(new Filters(), this.filtersSectionElement);
-  }
-
-  renderTripPoint() {
-    const points = this.pointModel.getPoints();
-    const destinations = this.pointModel.getDestinations();
-    const offers = this.pointModel.getOffers();
-    // console.log(destinations);
-
-    points.forEach((point) => {
-      render(new TripPoint(point, destinations, offers), this.tripPointsContainerElement);
-    });
-  }
-
-  renderAddPoint() {
-    render(new AddPoint(), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
-  }
-
-  renderEditPoint() {
-    render(new EditPoint(), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
-  }
-
   init() {
-    this.renderTripInfo();
-    this.renderSorting();
-    this.renderFilters();
-    this.renderTripPoint();
-    this.renderAddPoint();
-    this.renderEditPoint();
+    this.primePoints = [...this.pointModel.getPoints()];
+    this.primeDestinations = [...this.pointModel.getDestinations()];
+    this.primeOffers = [...this.pointModel.getOffers()];
+
+    render(new TripInfo(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
+    render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+    render(new Filters(), this.filtersSectionElement);
+    render(new EditPoint(this.primePoints[2], this.primeDestinations, this.primeOffers), this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
+
+    for (let i = 0; i < this.primePoints.length; i++) {
+      const tripPoint = new TripPoint(this.primePoints[i], this.primeDestinations, this.primeOffers);
+      render(tripPoint, this.tripPointsContainerElement);
+    }
   }
 }

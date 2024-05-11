@@ -1,6 +1,28 @@
 import {OFFERS, EVENT_TYPES, DESTINATIONS} from '../constants.js';
 import {createElement} from '../render.js';
-import {createEventTypeTemplate, createOfferTemplate, createDestinationTemplate} from './event-form-elements.js';
+// import {createEventTypeTemplate, createOfferTemplate, createDestinationTemplate} from './event-form-elements.js';
+
+const createEventTypeTemplate = (group) => `
+  <div class="event__type-item">
+    <input id="event-type-${group.toLowerCase()}-1" class="event__type-input visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}">
+    <label class="event__type-label  event__type-label--${group.toLowerCase()}" for="event-type-${group.toLowerCase()}-1">${group}</label>
+  </div>
+`;
+
+const createOfferTemplate = (type, title, price) => `
+  <div class="event__offer-selector">
+    <input class="event__offer-checkbox visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" checked>
+    <label class="event__offer-label" for="event-offer-${type}-1">
+      <span class="event__offer-title">${title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${price}</span>
+    </label>
+  </div>
+`;
+
+const createDestinationTemplate = (destination) => `
+ <option value="${destination}"></option>
+`;
 
 const createEditPointTemplate = () => `
   <li class="trip-events__item">
@@ -72,8 +94,14 @@ const createEditPointTemplate = () => `
 `;
 
 export default class EditPoint {
+  constructor(point, destinations, offers) {
+    this.point = point;
+    this.destinations = destinations;
+    this.offers = offers;
+  }
+
   getTemplate() {
-    return createEditPointTemplate();
+    return createEditPointTemplate(this.point, this.destinations, this.offers);
   }
 
   getElement() {
