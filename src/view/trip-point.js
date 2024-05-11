@@ -3,9 +3,7 @@ import {createElement} from '../render.js';
 const createTripPointTemplate = (point, destinations, offers) => {
   const {type, isFavorite} = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
-  const currentOffers = typeOffers.filter((typeOffer) => {
-    return point.offers.includes(typeOffer.id);
-  });
+  const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
 
   const createOffersItem = (title, price) => `
