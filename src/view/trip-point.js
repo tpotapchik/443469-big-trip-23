@@ -1,7 +1,9 @@
+import {humanizePointDateFrom} from '../utils.js';
 import {createElement} from '../render.js';
 
 const createTripPointTemplate = (point, destinations, offers) => {
-  const {type, isFavorite} = point;
+  const {type, isFavorite, basePrice, dateFrom} = point;
+  const dateFromFormatted = humanizePointDateFrom(dateFrom);
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
@@ -18,7 +20,7 @@ const createTripPointTemplate = (point, destinations, offers) => {
   return (`
   <li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">MAR 18</time>
+      <time class="event__date" datetime="2019-03-18">${dateFromFormatted}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
@@ -32,7 +34,7 @@ const createTripPointTemplate = (point, destinations, offers) => {
         <p class="event__duration">40M</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">600</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
