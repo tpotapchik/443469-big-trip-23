@@ -9,10 +9,10 @@ const createEventTypeTemplate = (group) => `
   </div>
 `;
 
-const createOfferTemplate = (type, title, price) => `
+const createOfferTemplate = (typeOffer, title, price) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" checked>
-    <label class="event__offer-label" for="event-offer-${type}-1">
+    <input class="event__offer-checkbox visually-hidden" id="event-offer-${typeOffer}-1" type="checkbox" name="event-offer-${typeOffer}" >
+    <label class="event__offer-label" for="event-offer-${typeOffer}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${price}</span>
@@ -27,7 +27,7 @@ const createImageItemTemplate = (src, description) => `
 const createEditPointTemplate = (point, destinations, offers) => {
   const {type, basePrice, dateFrom, dateTo} = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
-  const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
+  const currentOffers = offers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
 
   return (`
@@ -84,11 +84,11 @@ const createEditPointTemplate = (point, destinations, offers) => {
         </button>
       </header>
       <section class="event__details">
-        ${currentOffers.length > 0 ? `
+        ${typeOffers.length > 0 ? `
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
-              ${currentOffers.map(({typeOffer, title, price}) => createOfferTemplate(typeOffer, title, price)).join('')}
+              ${typeOffers.map(({typeOffer, title, price}) => createOfferTemplate(typeOffer, title, price)).join('')}
             </div>
           </section>
         ` : ''}

@@ -11,6 +11,11 @@ export const offers = [
         id: 'b4c3e4e6-9053-42ce-b747-e281314baa30',
         title: 'Upgrade to a business class',
         price: 20
+      },
+      {
+        id: 'b4c3e4e6-9053-42ce-b747-e281314baa29',
+        title: 'Non-smoking driver',
+        price: 5
       }
     ]
   },
@@ -31,6 +36,11 @@ export const offers = [
         id: 'b4c3e4e6-9053-42ce-b747-e281314baa34',
         title: 'Upgrade to a premium class',
         price: 345
+      },
+      {
+        id: 'b4c3e4e6-9053-42ce-b747-e281314baa11',
+        title: 'Priority boarding',
+        price: 1
       }
     ]
   }

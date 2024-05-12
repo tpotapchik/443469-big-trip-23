@@ -20,9 +20,7 @@ export const points = [
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e05',
     isFavorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31',
       'b4c3e4e6-9053-42ce-b747-e281314baa32',
-      'b4c3e4e6-9053-42ce-b747-e281314baa34'
     ],
     type: 'train'
   },
@@ -34,7 +32,6 @@ export const points = [
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e06',
     isFavorite: true,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31',
       'b4c3e4e6-9053-42ce-b747-e281314baa34'
     ],
     type: 'flight'
