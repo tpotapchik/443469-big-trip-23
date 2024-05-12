@@ -12,7 +12,7 @@ const DateFormats = {
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
-  DATE_TIME: 'YY/MM/DD HH:mm',
+  DATE_TIME: 'DD/MM/YY HH:mm',
   DAY: 'DD[d] HH[h] mm[m]',
   HOURS: 'HH[h] mm[m]',
   MINUTES: 'mm[m]'

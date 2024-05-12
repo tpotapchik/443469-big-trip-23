@@ -1,22 +1,16 @@
 import {calculateDuration, displayDate, displayDateMonth, displayDateTime, displayTime} from '../utils.js';
 import {createElement} from '../render.js';
 
-const createTripPointTemplate = (point, destinations, offers) => {
-  const {type, isFavorite, basePrice, dateFrom, dateTo} = point;
-  const typeOffers = offers.find((offer) => offer.type === point.type).offers;
-  const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  const currentDestination = destinations.find((destination) => destination.id === point.destination);
+const createOffersItemTemplate = (title, price) => `
+  <li class="event__offer">
+    <span class="event__offer-title">${title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${price}</span>
+  </li>
+`;
 
-  const createOffersItemTemplate = (title, price) => `
-    <li class="event__offer">
-      <span class="event__offer-title">${title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${price}</span>
-    </li>
-  `;
-
-  const createPointScheduleTemplate = (from, to) => `
-    <div class="event__schedule">
+const createPointScheduleTemplate = (from, to) => `
+  <div class="event__schedule">
     <p class="event__time">
       <time class="event__start-time" datetime="${displayDateTime(from)}">${displayTime(from)}</time>
       &mdash;
@@ -25,6 +19,12 @@ const createTripPointTemplate = (point, destinations, offers) => {
     <p class="event__duration">${calculateDuration(from, to)}</p>
   </div>
 `;
+
+const createTripPointTemplate = (point, destinations, offers) => {
+  const {type, isFavorite, basePrice, dateFrom, dateTo} = point;
+  const typeOffers = offers.find((offer) => offer.type === point.type).offers;
+  const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
+  const currentDestination = destinations.find((destination) => destination.id === point.destination);
 
   return (`
   <li class="trip-events__item">
