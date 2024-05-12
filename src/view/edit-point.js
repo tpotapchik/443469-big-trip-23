@@ -21,21 +21,20 @@ const createOfferTemplate = (type, title, price) => `
   </div>
 `;
 
-const createImageItemTemplate = (id) => `
-  <img class="event__photo" src="img/photos/${id}.jpg" alt="Event photo">
+const createImageItemTemplate = (src, description) => `
+  <img class="event__photo" src="${src}" alt="${description}">
 `;
 
 const createEditPointTemplate = (point, destinations, offers) => {
   const {type, isFavorite, basePrice, dateFrom, dateTo} = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  console.log(currentOffers);
+  // console.log(currentOffers);
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
-  console.log(currentDestination)
+  console.log(currentDestination);
 
-  return (
-    `
-  <li class="trip-events__item">
+  return (`
+    <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
@@ -97,20 +96,21 @@ const createEditPointTemplate = (point, destinations, offers) => {
           </section>
         ` : ''}
 
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${currentDestination.description}</p>
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${ID_IMAGES.map((id) => createImageItemTemplate(id)).join('')}
+         ${currentDestination.pictures.length > 0 ? `
+           <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">${currentDestination?.description}</p>
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${currentDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ` : ''}
       </section>
     </form>
   </li>
-`
-  )
+  `);
 };
 
 export default class EditPoint {

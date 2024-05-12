@@ -5,7 +5,7 @@ export const destinations = [
     name: 'Chamonix',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://picsum.photos/300/200?r=0.0762563005163317',
         description: 'Chamonix parliament building'
       }
     ]
@@ -18,7 +18,7 @@ export const destinations = [
       {
         src: 'https://a.cdn-hotels.com/gdcs/production196/d520/23bf4300-f586-11e8-b8fa-0242ac11000d.jpg',
         description: 'Geneva building'
-      }
+      },
     ]
   },
   {
@@ -27,7 +27,7 @@ export const destinations = [
     name: 'Porto',
     pictures: [
       {
-        src: 'https://a.cdn-hotels.com/gdcs/production196/d520/23bf4300-f586-11e8-b8fa-0242ac11000d.jpg',
+        src: 'https://media.routard.com/image/08/2/porto-pont.1614082.jpg',
         description: 'Porto description'
       }
     ]
