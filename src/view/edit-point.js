@@ -27,7 +27,6 @@ const createImageItemTemplate = (src, description) => `
 const createEditPointTemplate = (point, destinations, offers) => {
   const {type, basePrice, dateFrom, dateTo} = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
-  const currentOffers = offers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
 
   return (`
