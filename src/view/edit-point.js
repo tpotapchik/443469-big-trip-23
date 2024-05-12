@@ -9,10 +9,10 @@ const createEventTypeTemplate = (group) => `
   </div>
 `;
 
-const createOfferTemplate = (typeOffer, title, price) => `
+const createOfferTemplate = (type, title, price, id, isChecked) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox visually-hidden" id="event-offer-${typeOffer}-1" type="checkbox" name="event-offer-${typeOffer}" >
-    <label class="event__offer-label" for="event-offer-${typeOffer}-1">
+    <input class="event__offer-checkbox visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
+    <label class="event__offer-label" for="event-offer-${type}-${id}">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${price}</span>
@@ -20,12 +20,17 @@ const createOfferTemplate = (typeOffer, title, price) => `
   </div>
 `;
 
+const createCheckedOfferTemplates = (type, typeOffers, pointOffers) => typeOffers.map(({id, title, price}) => {
+  const isChecked = pointOffers.includes(id);
+  return createOfferTemplate(type, title, price, id, isChecked);
+}).join('');
+
 const createImageItemTemplate = (src, description) => `
   <img class="event__photo" src="${src}" alt="${description}">
 `;
 
 const createEditPointTemplate = (point, destinations, offers) => {
-  const {type, basePrice, dateFrom, dateTo} = point;
+  const {type, basePrice, dateFrom, dateTo, offers: pointOffers} = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
 
@@ -83,26 +88,26 @@ const createEditPointTemplate = (point, destinations, offers) => {
         </button>
       </header>
       <section class="event__details">
-        ${typeOffers.length > 0 ? `
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-            <div class="event__available-offers">
-              ${typeOffers.map(({typeOffer, title, price}) => createOfferTemplate(typeOffer, title, price)).join('')}
-            </div>
-          </section>
-        ` : ''}
+      ${typeOffers.length > 0 ? `
+        <section class="event__section  event__section--offers">
+          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <div class="event__available-offers">
+            ${createCheckedOfferTemplates(type, typeOffers, pointOffers)}
+          </div>
+        </section>
+      ` : ''}
 
-         ${currentDestination.pictures.length > 0 ? `
-           <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${currentDestination?.description}</p>
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                ${currentDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
-              </div>
-            </div>
-          </section>
-        ` : ''}
+      ${currentDestination.pictures.length > 0 ? `
+       <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${currentDestination?.description}</p>
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${currentDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+          </div>
+        </div>
+      </section>
+      ` : ''}
       </section>
     </form>
   </li>
