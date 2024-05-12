@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration.js';
+import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
@@ -38,4 +38,4 @@ const displayDateTime = (date, dateFormat = DateFormats.DATE_TIME_SYSTEM) => dat
 
 const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
-export {getRandomArrayElement, calculateDuration, displayDateMonth,displayDate, displayTime, displayDateTime};
+export {getRandomArrayElement, calculateDuration, displayDateMonth,displayDate, displayTime, displayDateTime, DateFormats};

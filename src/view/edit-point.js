@@ -1,7 +1,6 @@
-import {ID_IMAGES, EVENT_TYPES} from '../constants.js';
+import {EVENT_TYPES} from '../constants.js';
+import {displayDateTime, DateFormats} from '../utils.js';
 import {createElement} from '../render.js';
-import {displayTime} from "../utils";
-// import {createEventTypeTemplate, createOfferTemplate, createDestinationTemplate} from './event-form-elements.js';
 
 const createEventTypeTemplate = (group) => `
   <div class="event__type-item">
@@ -26,12 +25,11 @@ const createImageItemTemplate = (src, description) => `
 `;
 
 const createEditPointTemplate = (point, destinations, offers) => {
-  const {type, isFavorite, basePrice, dateFrom, dateTo} = point;
+  const {type, basePrice, dateFrom, dateTo} = point;
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  // console.log(currentOffers);
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
-  console.log(currentDestination);
+  // console.log(point);
 
   return (`
     <li class="trip-events__item">
@@ -66,10 +64,10 @@ const createEditPointTemplate = (point, destinations, offers) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 ${displayTime(dateFrom)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormats.DATE_TIME)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 ${displayTime(dateTo)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormats.DATE_TIME)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">

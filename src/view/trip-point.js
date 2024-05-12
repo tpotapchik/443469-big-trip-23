@@ -3,7 +3,6 @@ import {createElement} from '../render.js';
 
 const createTripPointTemplate = (point, destinations, offers) => {
   const {type, isFavorite, basePrice, dateFrom, dateTo} = point;
-  // console.log(offers);
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
@@ -62,12 +61,9 @@ export default class TripPoint {
     this.point = point;
     this.destinations = destinations;
     this.offers = offers;
-
-    // console.log(this.point);
   }
 
   getTemplate() {
-    console.log(this.destinations);
     return createTripPointTemplate(this.point, this.destinations, this.offers);
   }
 

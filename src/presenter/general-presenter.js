@@ -1,10 +1,9 @@
-// import {points} from '../mock/points.js';
 import {render, RenderPosition} from '../render.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
 import TripPoint from '../view/trip-point.js';
-import AddPoint from '../view/add-point.js';
+// import AddPoint from '../view/add-point.js';
 import EditPoint from '../view/edit-point.js';
 
 export default class GeneralPresenter {
