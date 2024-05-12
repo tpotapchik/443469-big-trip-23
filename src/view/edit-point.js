@@ -29,7 +29,6 @@ const createEditPointTemplate = (point, destinations, offers) => {
   const typeOffers = offers.find((offer) => offer.type === point.type).offers;
   const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const currentDestination = destinations.find((destination) => destination.id === point.destination);
-  // console.log(point);
 
   return (`
     <li class="trip-events__item">
