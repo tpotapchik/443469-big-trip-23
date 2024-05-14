@@ -33,7 +33,6 @@ const createImageItemTemplate = (src, description) => `
 `;
 
 const createEditPointTemplate = (point, allOffers, allDestinations, pointDestination) => {
-  console.log('point', point)
   const {type, basePrice, dateFrom, dateTo} = point;
 
   return (`
@@ -121,14 +120,34 @@ export default class EditPoint extends AbstractView {
   #allOffers = null;
   #allDestinations = null;
   #pointDestination = null;
+  #handleEditSubmit = null;
+  #handleEditClose = null;
 
-  constructor({point, allOffers, allDestinations, pointDestination}) {
+  constructor({point, allOffers, allDestinations, pointDestination, onEditSubmit, onEditClose}) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#pointDestination = pointDestination;
+    this.#handleEditSubmit = onEditSubmit;
+    this.#handleEditClose = onEditClose;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editRollUpHandler);
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditSubmit();
+  };
+
+  #editRollUpHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClose();
+  };
 
   get template() {
     return createEditPointTemplate(this.#point, this.#allOffers, this.#allDestinations, this.#pointDestination);

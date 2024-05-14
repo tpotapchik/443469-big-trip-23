@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../framework/render.js';
+import {render, RenderPosition, replace} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
@@ -8,6 +8,9 @@ import EditPoint from '../view/edit-point.js';
 export default class GeneralPresenter {
   #pointModel = null;
   #primePoints = null;
+  #sorting = null;
+  #filters = null;
+  #tripInfo = null;
 
   constructor({pointModel}) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -20,44 +23,64 @@ export default class GeneralPresenter {
     this.#pointModel = pointModel;
   }
 
-  #renderPoint(point) {
-    const tripPoint = new TripPoint({
-      point,
-      allOffers: [...this.#pointModel.getOffersById(point.type, point.offers)],
-      allDestinations: this.#pointModel.getDestinationsById(point.destination)
-    });
-    render(tripPoint, this.tripPointsContainerElement);
-  }
-
-  #renderEditPoint(point) {
-    const renderEditPoint = new EditPoint({
-      point,
-      allOffers: this.#pointModel.getOffersByType(point.type),
-      allDestinations: this.#pointModel.getDestinations(),
-      pointDestination: this.#pointModel.getDestinationsById(point.destination)
-    });
-    render(renderEditPoint, this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
-  }
-
-  // function replacePointToForm() {
-  //   replace(pointEditComponent, pointComponent);
-  // }
-  //
-  // function replaceFormToPoint() {
-  //   replace(pointComponent, pointEditComponent);
-  // }
-
   init() {
     this.#primePoints = [...this.#pointModel.getPoints()];
+    this.#sorting = new Sorting();
+    this.#filters = new Filters();
+    this.#tripInfo = new TripInfo();
 
-    render(new TripInfo(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
-    render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
-    render(new Filters(), this.filtersSectionElement);
-
-    this.#renderEditPoint(this.#primePoints[2]);
+    render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
+    render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+    render(this.#filters, this.filtersSectionElement);
 
     for (let i = 0; i < this.#primePoints.length; i++) {
       this.#renderPoint(this.#primePoints[i]);
     }
+  }
+
+  #renderPoint(point) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceEditToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const hideEditorPoint = () => {
+      replaceEditToPoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    const showEditorPoint = () => {
+      replacePointToEdit();
+      document.addEventListener('keydown', escKeyDownHandler);
+    };
+
+    const tripPoint = new TripPoint({
+      point,
+      allOffers: [...this.#pointModel.getOffersById(point.type, point.offers)],
+      allDestinations: this.#pointModel.getDestinationsById(point.destination),
+      onEditClick: () => showEditorPoint(),
+    });
+
+    const editPoint = new EditPoint({
+      point,
+      allOffers: this.#pointModel.getOffersByType(point.type),
+      allDestinations: this.#pointModel.getDestinations(),
+      pointDestination: this.#pointModel.getDestinationsById(point.destination),
+      onEditSubmit: () => hideEditorPoint(),
+      onEditClose: () => hideEditorPoint(),
+    });
+
+    function replacePointToEdit() {
+      replace(editPoint, tripPoint);
+    }
+
+    function replaceEditToPoint() {
+      replace(tripPoint, editPoint);
+    }
+
+    render(tripPoint, this.tripPointsContainerElement);
   }
 }

@@ -20,6 +20,7 @@ const DateFormats = {
 
 const calculateDuration = (dateFrom, dateTo) => {
   const dateDelta = dayjs.duration(dayjs(dateTo).diff(dateFrom));
+  //todo check many months
   if (dateDelta.days()) {
     return dateDelta.format(DateFormats.DAY);
   }
