@@ -1,5 +1,5 @@
 import {FILTER_TYPES} from '../constants.js';
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createFilterItemTemplate = (type) => `
   <div class="trip-filters__filter">
