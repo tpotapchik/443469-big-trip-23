@@ -1,5 +1,9 @@
 import GeneralPresenter from './presenter/general-presenter.js';
+import PointModel from './model/point-model.js';
 
-const generatePresenter = new GeneralPresenter();
+const pointModel = new PointModel();
+pointModel.init();
+
+const generatePresenter = new GeneralPresenter({pointModel});
 
 generatePresenter.init();
