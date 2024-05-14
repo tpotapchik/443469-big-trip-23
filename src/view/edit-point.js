@@ -20,19 +20,19 @@ const createOfferTemplate = (type, title, price, id, isChecked) => `
   </div>
 `;
 
-const createCheckedOfferTemplates = (type, typeOffers, pointOffers) => typeOffers.map(({id, title, price}) => {
-  const isChecked = pointOffers.includes(id);
-  return createOfferTemplate(type, title, price, id, isChecked);
-}).join('');
+const createCheckedOfferTemplates = (allOffers, pointOffers) => allOffers.offers
+  .map((offer) => {
+    const isChecked = pointOffers.includes(offer.id);
+    return createOfferTemplate(allOffers.type, offer.title, offer.price, offer.id, isChecked);
+  })
+  .join('');
 
 const createImageItemTemplate = (src, description) => `
   <img class="event__photo" src="${src}" alt="${description}">
 `;
 
-const createEditPointTemplate = (point, destinations, offers) => {
-  const {type, basePrice, dateFrom, dateTo, offers: pointOffers} = point;
-  const typeOffers = offers.find((offer) => offer.type === point.type).offers;
-  const currentDestination = destinations.find((destination) => destination.id === point.destination);
+const createEditPointTemplate = (point, allOffers, allDestinations, pointDestination) => {
+  const {type, basePrice, dateFrom, dateTo} = point;
 
   return (`
     <li class="trip-events__item">
@@ -57,9 +57,9 @@ const createEditPointTemplate = (point, destinations, offers) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-           ${destinations.map((item) => `
+           ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
           `)}
           </datalist>
@@ -88,22 +88,22 @@ const createEditPointTemplate = (point, destinations, offers) => {
         </button>
       </header>
       <section class="event__details">
-      ${typeOffers.length > 0 ? `
+      ${allOffers.offers.length > 0 ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
-            ${createCheckedOfferTemplates(type, typeOffers, pointOffers)}
+            ${createCheckedOfferTemplates(allOffers, point.offers)}
           </div>
         </section>
       ` : ''}
 
-      ${currentDestination.pictures.length > 0 ? `
+      ${pointDestination.pictures.length > 0 ? `
        <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${currentDestination?.description}</p>
+        <p class="event__destination-description">${pointDestination?.description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${currentDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+            ${pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
           </div>
         </div>
       </section>
@@ -115,14 +115,15 @@ const createEditPointTemplate = (point, destinations, offers) => {
 };
 
 export default class EditPoint {
-  constructor(point, destinations, offers) {
+  constructor({point, allOffers, allDestinations, pointDestination}) {
     this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    this.allOffers = allOffers;
+    this.allDestinations = allDestinations;
+    this.pointDestination = pointDestination;
   }
 
   getTemplate() {
-    return createEditPointTemplate(this.point, this.destinations, this.offers);
+    return createEditPointTemplate(this.point, this.allOffers, this.allDestinations, this.pointDestination);
   }
 
   getElement() {
