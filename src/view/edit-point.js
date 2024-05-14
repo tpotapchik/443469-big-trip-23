@@ -33,6 +33,7 @@ const createImageItemTemplate = (src, description) => `
 `;
 
 const createEditPointTemplate = (point, allOffers, allDestinations, pointDestination) => {
+  console.log('point', point)
   const {type, basePrice, dateFrom, dateTo} = point;
 
   return (`

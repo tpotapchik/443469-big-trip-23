@@ -20,6 +20,33 @@ export default class GeneralPresenter {
     this.#pointModel = pointModel;
   }
 
+  #renderPoint(point) {
+    const tripPoint = new TripPoint({
+      point,
+      allOffers: [...this.#pointModel.getOffersById(point.type, point.offers)],
+      allDestinations: this.#pointModel.getDestinationsById(point.destination)
+    });
+    render(tripPoint, this.tripPointsContainerElement);
+  }
+
+  #renderEditPoint(point) {
+    const renderEditPoint = new EditPoint({
+      point,
+      allOffers: this.#pointModel.getOffersByType(point.type),
+      allDestinations: this.#pointModel.getDestinations(),
+      pointDestination: this.#pointModel.getDestinationsById(point.destination)
+    });
+    render(renderEditPoint, this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
+  }
+
+  // function replacePointToForm() {
+  //   replace(pointEditComponent, pointComponent);
+  // }
+  //
+  // function replaceFormToPoint() {
+  //   replace(pointComponent, pointEditComponent);
+  // }
+
   init() {
     this.#primePoints = [...this.#pointModel.getPoints()];
 
@@ -27,21 +54,10 @@ export default class GeneralPresenter {
     render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
     render(new Filters(), this.filtersSectionElement);
 
-    const renderEditPoint = new EditPoint({
-      point: this.#primePoints[2],
-      allOffers: this.#pointModel.getOffersByType(this.#primePoints[2].type),
-      allDestinations: this.#pointModel.getDestinations(),
-      pointDestination: this.#pointModel.getDestinationsById(this.#primePoints[2].destination)
-    });
-    render(renderEditPoint, this.tripPointsContainerElement, RenderPosition.AFTERBEGIN);
+    this.#renderEditPoint(this.#primePoints[2]);
 
     for (let i = 0; i < this.#primePoints.length; i++) {
-      const tripPoint = new TripPoint({
-        point: this.#primePoints[i],
-        allOffers: [...this.#pointModel.getOffersById(this.#primePoints[i].type, this.#primePoints[i].offers)],
-        allDestinations: this.#pointModel.getDestinationsById(this.#primePoints[i].destination)
-      });
-      render(tripPoint, this.tripPointsContainerElement);
+      this.#renderPoint(this.#primePoints[i]);
     }
   }
 }
