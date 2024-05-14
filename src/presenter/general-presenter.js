@@ -1,4 +1,4 @@
-import {render, RenderPosition} from '../render.js';
+import { render, RenderPosition } from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
@@ -19,8 +19,6 @@ export default class GeneralPresenter {
 
   init() {
     this.primePoints = [...this.pointModel.getPoints()];
-    this.primeDestinations = [...this.pointModel.getDestinations()];
-    this.primeOffers = [...this.pointModel.getOffers()];
 
     render(new TripInfo(), this.tripInfoElement, RenderPosition.AFTERBEGIN);
     render(new Sorting(), this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);

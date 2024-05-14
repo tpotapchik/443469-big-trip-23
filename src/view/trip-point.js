@@ -1,5 +1,5 @@
 import {calculateDuration, displayDate, displayDateMonth, displayDateTime, displayTime} from '../utils.js';
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createOffersItemTemplate = (title, price) => `
   <li class="event__offer">
@@ -53,26 +53,15 @@ const createTripPointTemplate = (point, allOffers, allDestinations) => {
 `);
 };
 
-export default class TripPoint {
+export default class TripPoint extends AbstractView {
   constructor({point, allOffers, allDestinations}) {
+    super();
     this.point = point;
     this.allOffers = allOffers;
     this.allDestinations = allDestinations;
   }
 
-  getTemplate() {
+  get template() {
     return createTripPointTemplate(this.point, this.allOffers, this.allDestinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

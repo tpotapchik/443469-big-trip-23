@@ -1,7 +1,8 @@
 import {EVENT_TYPES} from '../constants.js';
 import {displayDateTime, DateFormats} from '../utils.js';
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
+//todo checked type
 const createEventTypeTemplate = (group) => `
   <div class="event__type-item">
     <input id="event-type-${group.toLowerCase()}-1" class="event__type-input visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}">
@@ -114,27 +115,16 @@ const createEditPointTemplate = (point, allOffers, allDestinations, pointDestina
   `);
 };
 
-export default class EditPoint {
+export default class EditPoint extends AbstractView {
   constructor({point, allOffers, allDestinations, pointDestination}) {
+    super();
     this.point = point;
     this.allOffers = allOffers;
     this.allDestinations = allDestinations;
     this.pointDestination = pointDestination;
   }
 
-  getTemplate() {
+  get template() {
     return createEditPointTemplate(this.point, this.allOffers, this.allDestinations, this.pointDestination);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
