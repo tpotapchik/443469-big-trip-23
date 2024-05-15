@@ -12,7 +12,7 @@ export default class GeneralPresenter {
   #filters = null;
   #tripInfo = null;
 
-  constructor({pointModel}) {
+  constructor(pointModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
     this.tripEventsSectionElement = document.querySelector('.trip-events');
     this.filtersSectionElement = document.querySelector('.trip-controls__filters');
@@ -64,14 +64,14 @@ export default class GeneralPresenter {
       onEditClick: () => showEditorPoint(),
     });
 
-    const editPoint = new EditPoint({
+    const editPoint = new EditPoint(
       point,
-      allOffers: this.#pointModel.getOffersByType(point.type),
-      allDestinations: this.#pointModel.destinations,
-      pointDestination: this.#pointModel.getDestinationsById(point.destination),
-      onEditSubmit: () => hideEditorPoint(),
-      onEditClose: () => hideEditorPoint(),
-    });
+      this.#pointModel.getOffersByType(point.type),
+      this.#pointModel.destinations,
+      this.#pointModel.getDestinationsById(point.destination),
+      () => hideEditorPoint(),
+      () => hideEditorPoint(),
+    );
 
     function replacePointToEdit() {
       replace(editPoint, tripPoint);

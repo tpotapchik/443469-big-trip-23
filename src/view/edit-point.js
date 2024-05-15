@@ -2,11 +2,10 @@ import {EVENT_TYPES} from '../constants.js';
 import {displayDateTime, DateFormats} from '../utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-//todo checked type
-const createEventTypeTemplate = (group) => `
+const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
-    <input id="event-type-${group.toLowerCase()}-1" class="event__type-input visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}">
-    <label class="event__type-label  event__type-label--${group.toLowerCase()}" for="event-type-${group.toLowerCase()}-1">${group}</label>
+    <input id="event-type-${type.toLowerCase()}-${id}" class="event__type-input visually-hidden" type="radio" name="event-type-${id}" value="${type.toLowerCase()}" ${type.toLowerCase() === pointType ? 'checked' : ''}>
+    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${id}">${type}</label>
   </div>
 `;
 
@@ -33,33 +32,33 @@ const createImageItemTemplate = (src, description) => `
 `;
 
 const createEditPointTemplate = (point, allOffers, allDestinations, pointDestination) => {
-  const {type, basePrice, dateFrom, dateTo} = point;
+  const {type, basePrice, dateFrom, dateTo, id} = point;
 
   return (`
     <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-1">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${EVENT_TYPES.map((group) => createEventTypeTemplate(group)).join('')}
+              ${EVENT_TYPES.map((group) => createEventTypeTemplate(group, type, id)).join('')}
             </fieldset>
           </div>
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+          <label class="event__label  event__type-output" for="event-destination--${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-1">
-          <datalist id="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${id}">
+          <datalist id="destination-list-${id}">
            ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
           `)}
@@ -67,19 +66,19 @@ const createEditPointTemplate = (point, allOffers, allDestinations, pointDestina
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormats.DATE_TIME)}">
+          <label class="visually-hidden" for="event-start-time-${id}">From</label>
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormats.DATE_TIME)}">
           &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormats.DATE_TIME)}">
+          <label class="visually-hidden" for="event-end-time-${id}">To</label>
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormats.DATE_TIME)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price-${id}">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -123,7 +122,7 @@ export default class EditPoint extends AbstractView {
   #handleEditSubmit = null;
   #handleEditClose = null;
 
-  constructor({point, allOffers, allDestinations, pointDestination, onEditSubmit, onEditClose}) {
+  constructor(point, allOffers, allDestinations, pointDestination, onEditSubmit, onEditClose) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
