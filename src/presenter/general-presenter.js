@@ -7,7 +7,7 @@ import EditPoint from '../view/edit-point.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
-  #primePoints = null;
+  #primePoints = [];
   #sorting = null;
   #filters = null;
   #tripInfo = null;
@@ -24,7 +24,7 @@ export default class GeneralPresenter {
   }
 
   init() {
-    this.#primePoints = [...this.#pointModel.getPoints()];
+    this.#primePoints = [...this.#pointModel.points];
     this.#sorting = new Sorting();
     this.#filters = new Filters();
     this.#tripInfo = new TripInfo();
@@ -67,7 +67,7 @@ export default class GeneralPresenter {
     const editPoint = new EditPoint({
       point,
       allOffers: this.#pointModel.getOffersByType(point.type),
-      allDestinations: this.#pointModel.getDestinations(),
+      allDestinations: this.#pointModel.destinations,
       pointDestination: this.#pointModel.getDestinationsById(point.destination),
       onEditSubmit: () => hideEditorPoint(),
       onEditClose: () => hideEditorPoint(),
