@@ -1,4 +1,4 @@
-import {FILTER_TYPES} from '../constants.js';
+import {FilterTypes, EventsMessages} from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createFilterItemTemplate = (type) => `
@@ -10,7 +10,6 @@ const createFilterItemTemplate = (type) => `
 
 const createFiltersTemplate = () => `
   <form class="trip-filters" action="#" method="get">
-    ${FILTER_TYPES.map((type) => createFilterItemTemplate(type)).join('').toLowerCase()}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>
 `;

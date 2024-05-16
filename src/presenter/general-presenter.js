@@ -1,9 +1,11 @@
+import {EventsMessages} from '../constants.js';
 import {render, RenderPosition, replace} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
 import TripPoint from '../view/trip-point.js';
 import EditPoint from '../view/edit-point.js';
+import TripEventsMessage from '../view/trip-events-message.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
@@ -11,6 +13,7 @@ export default class GeneralPresenter {
   #sorting = null;
   #filters = null;
   #tripInfo = null;
+  #tripEventsMessage = null;
 
   constructor(pointModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -28,10 +31,12 @@ export default class GeneralPresenter {
     this.#sorting = new Sorting();
     this.#filters = new Filters();
     this.#tripInfo = new TripInfo();
+    this.#tripEventsMessage = new TripEventsMessage(EventsMessages.EVERYTHING);
 
     render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
     render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
     render(this.#filters, this.filtersSectionElement);
+    render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < this.#primePoints.length; i++) {
       this.#renderPoint(this.#primePoints[i]);
