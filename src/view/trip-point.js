@@ -1,5 +1,5 @@
 import {calculateDuration, displayDate, displayDateMonth, displayDateTime, displayTime} from '../utils.js';
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createOffersItemTemplate = (title, price) => `
   <li class="event__offer">
@@ -20,11 +20,8 @@ const createPointScheduleTemplate = (from, to) => `
   </div>
 `;
 
-const createTripPointTemplate = (point, destinations, offers) => {
+const createTripPointTemplate = (point, allOffers, allDestinations) => {
   const {type, isFavorite, basePrice, dateFrom, dateTo} = point;
-  const typeOffers = offers.find((offer) => offer.type === point.type).offers;
-  const currentOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
-  const currentDestination = destinations.find((destination) => destination.id === point.destination);
 
   return (`
   <li class="trip-events__item">
@@ -33,14 +30,14 @@ const createTripPointTemplate = (point, destinations, offers) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} ${currentDestination.name}</h3>
+      <h3 class="event__title">${type} ${allDestinations.name}</h3>
       ${createPointScheduleTemplate(dateFrom, dateTo)}
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-       ${currentOffers.map(({title, price}) => createOffersItemTemplate(title, price)).join('')}
+       ${allOffers.map(({title, price}) => createOffersItemTemplate(title, price)).join('')}
       </ul>
       <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -56,26 +53,28 @@ const createTripPointTemplate = (point, destinations, offers) => {
 `);
 };
 
-export default class TripPoint {
-  constructor(point, destinations, offers) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+export default class TripPoint extends AbstractView {
+  #point = null;
+  #allOffers = null;
+  #allDestinations = null;
+  #handleEditClick = null;
+
+  constructor({point, allOffers, allDestinations, onEditClick}) {
+    super();
+    this.#point = point;
+    this.#allOffers = allOffers;
+    this.#allDestinations = allDestinations;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate() {
-    return createTripPointTemplate(this.point, this.destinations, this.offers);
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTripPointTemplate(this.#point, this.#allOffers, this.#allDestinations);
   }
 }
