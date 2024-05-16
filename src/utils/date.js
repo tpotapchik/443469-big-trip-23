@@ -37,6 +37,5 @@ const displayDate = (date) => date ? dayjs(date).format(DateFormats.DATE) : '';
 const displayTime = (time) => time ? dayjs(time).format(DateFormats.TIME) : '';
 const displayDateTime = (date, dateFormat = DateFormats.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
 
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
-export {getRandomArrayElement, calculateDuration, displayDateMonth,displayDate, displayTime, displayDateTime, DateFormats};
+export {calculateDuration, displayDateMonth,displayDate, displayTime, displayDateTime, DateFormats};

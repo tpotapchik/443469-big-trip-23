@@ -1,4 +1,4 @@
-import {calculateDuration, displayDate, displayDateMonth, displayDateTime, displayTime} from '../utils.js';
+import {calculateDuration, displayDate, displayDateMonth, displayDateTime, displayTime} from '../utils/date.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createOffersItemTemplate = (title, price) => `
