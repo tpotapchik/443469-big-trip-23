@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
 import TripPoint from '../view/trip-point.js';
 import EditPoint from '../view/edit-point.js';
 
@@ -17,6 +17,9 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
+    const prevTripPoint = this.#tripPoint;
+    const prevEditPoint = this.#editPoint;
+
     this.#tripPoint = new TripPoint({
       point: this.#point,
       allOffers: [...this.#pointModel.getOffersById(this.#point.type, this.#point.offers)],
@@ -33,7 +36,21 @@ export default class PointPresenter {
       () => this.#hideEditorPoint(),
     );
 
-    this.#renderPoint();
+    if (prevTripPoint === null || prevEditPoint === null) {
+      render(this.#tripPoint, this.#pointContainer);
+      return;
+    }
+
+    if (this.#pointContainer.contains(prevTripPoint.element)) {
+      replace(this.#tripPoint, prevTripPoint);
+    }
+
+    if (this.#pointContainer.contains(prevEditPoint.element)) {
+      replace(this.#editPoint, prevEditPoint);
+    }
+
+    remove(prevTripPoint);
+    remove(prevEditPoint);
   }
 
   #escKeyDownHandler = (evt) => {
@@ -62,7 +79,8 @@ export default class PointPresenter {
     replace(this.#tripPoint, this.#editPoint);
   }
 
-  #renderPoint() {
-    render(this.#tripPoint, this.#pointContainer);
+  destroy() {
+    remove(this.#tripPoint);
+    remove(this.#editPoint);
   }
 }
