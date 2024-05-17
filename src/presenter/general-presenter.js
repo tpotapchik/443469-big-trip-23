@@ -1,12 +1,11 @@
 import {EventsMessages} from '../constants.js';
-import {render, RenderPosition, replace} from '../framework/render.js';
+import {render, RenderPosition} from '../framework/render.js';
 import {generateFilters} from '../utils/filter-date.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
-import TripPoint from '../view/trip-point.js';
-import EditPoint from '../view/edit-point.js';
 import TripEventsMessage from '../view/trip-events-message.js';
+import PointPresenter from './point-presenter.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
@@ -55,48 +54,7 @@ export default class GeneralPresenter {
   }
 
   #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceEditToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const hideEditorPoint = () => {
-      replaceEditToPoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    };
-
-    const showEditorPoint = () => {
-      replacePointToEdit();
-      document.addEventListener('keydown', escKeyDownHandler);
-    };
-
-    const tripPoint = new TripPoint({
-      point,
-      allOffers: [...this.#pointModel.getOffersById(point.type, point.offers)],
-      allDestinations: this.#pointModel.getDestinationsById(point.destination),
-      onEditClick: () => showEditorPoint(),
-    });
-
-    const editPoint = new EditPoint(
-      point,
-      this.#pointModel.getOffersByType(point.type),
-      this.#pointModel.destinations,
-      this.#pointModel.getDestinationsById(point.destination),
-      () => hideEditorPoint(),
-      () => hideEditorPoint(),
-    );
-
-    function replacePointToEdit() {
-      replace(editPoint, tripPoint);
-    }
-
-    function replaceEditToPoint() {
-      replace(tripPoint, editPoint);
-    }
-
-    render(tripPoint, this.tripPointsContainerElement);
+    const pointPresenter = new PointPresenter(this.#pointModel, this.tripPointsContainerElement);
+    pointPresenter.init(point);
   }
 }
