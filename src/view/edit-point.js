@@ -1,5 +1,5 @@
 import {EVENT_TYPES} from '../constants.js';
-import {displayDateTime, DateFormats} from '../utils.js';
+import {displayDateTime, DateFormats} from '../utils/date.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createEventTypeTemplate = (type, pointType, id) => `

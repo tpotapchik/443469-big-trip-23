@@ -1,16 +1,19 @@
+import {EventsMessages} from '../constants.js';
 import {render, RenderPosition, replace} from '../framework/render.js';
+import {generateFilters} from '../utils/filter-date.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
 import TripPoint from '../view/trip-point.js';
 import EditPoint from '../view/edit-point.js';
+import TripEventsMessage from '../view/trip-events-message.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
   #primePoints = [];
   #sorting = null;
-  #filters = null;
   #tripInfo = null;
+  #tripEventsMessage = null;
 
   constructor(pointModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -26,12 +29,25 @@ export default class GeneralPresenter {
   init() {
     this.#primePoints = [...this.#pointModel.points];
     this.#sorting = new Sorting();
-    this.#filters = new Filters();
     this.#tripInfo = new TripInfo();
-
+    this.#tripEventsMessage = new TripEventsMessage(EventsMessages.EVERYTHING);
     render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
+    this.#renderFilters();
+    this.#renderEventsBody();
+  }
+
+  #renderFilters() {
+    const filters = generateFilters(this.#primePoints);
+    render(new Filters(filters), this.filtersSectionElement);
+  }
+
+  #renderEventsBody() {
+    if (this.#primePoints.length === 0) {
+      render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+      return;
+    }
+
     render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
-    render(this.#filters, this.filtersSectionElement);
 
     for (let i = 0; i < this.#primePoints.length; i++) {
       this.#renderPoint(this.#primePoints[i]);
