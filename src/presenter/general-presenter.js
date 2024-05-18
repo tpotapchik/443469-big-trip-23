@@ -1,4 +1,5 @@
 import {EventsMessages} from '../constants.js';
+import {updateItem} from '../utils/common.js';
 import {render, RenderPosition} from '../framework/render.js';
 import {generateFilters} from '../utils/filter-date.js';
 import Sorting from '../view/sorting.js';
@@ -13,6 +14,7 @@ export default class GeneralPresenter {
   #sorting = null;
   #tripInfo = null;
   #tripEventsMessage = null;
+  #pointPresenters = new Map();
 
   constructor(pointModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -53,8 +55,18 @@ export default class GeneralPresenter {
     }
   }
 
+  #handlePointChange = (updatedPoint) => {
+    this.#primePoints = updateItem(this.#primePoints, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
   #renderPoint(point) {
-    const pointPresenter = new PointPresenter(this.#pointModel, this.tripPointsContainerElement);
+    const pointPresenter = new PointPresenter(
+      this.#pointModel,
+      this.tripPointsContainerElement,
+      this.#handlePointChange
+    );
     pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 }

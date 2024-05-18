@@ -8,10 +8,12 @@ export default class PointPresenter {
   #point = null;
   #tripPoint = null;
   #editPoint = null;
+  #handleDataChange = null;
 
-  constructor(pointModel, pointContainer) {
+  constructor(pointModel, pointContainer, onDataChange) {
     this.#pointContainer = pointContainer;
     this.#pointModel = pointModel;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point) {
@@ -25,6 +27,7 @@ export default class PointPresenter {
       allOffers: [...this.#pointModel.getOffersById(this.#point.type, this.#point.offers)],
       allDestinations: this.#pointModel.getDestinationsById(this.#point.destination),
       onEditClick: () => this.#showEditorPoint(),
+      onFavoriteClick: () => this.#handleFavoriteClick(),
     });
 
     this.#editPoint = new EditPoint(
@@ -78,6 +81,11 @@ export default class PointPresenter {
   #replaceEditToPoint() {
     replace(this.#tripPoint, this.#editPoint);
   }
+
+  #handleFavoriteClick = () => {
+    const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
+    this.#handleDataChange(updatedPoint);
+  };
 
   destroy() {
     remove(this.#tripPoint);

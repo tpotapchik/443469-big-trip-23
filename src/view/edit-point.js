@@ -140,12 +140,12 @@ export default class EditPoint extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditSubmit();
+    this.#handleEditSubmit(this.#point);
   };
 
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditClose();
+    this.#handleEditClose(this.#point);
   };
 
   get template() {
