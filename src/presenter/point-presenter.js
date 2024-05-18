@@ -1,3 +1,4 @@
+import {Mode} from '../constants.js';
 import {render, replace, remove} from '../framework/render.js';
 import TripPoint from '../view/trip-point.js';
 import EditPoint from '../view/edit-point.js';
@@ -9,11 +10,14 @@ export default class PointPresenter {
   #tripPoint = null;
   #editPoint = null;
   #handleDataChange = null;
+  #handleModeChange = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(pointModel, pointContainer, onDataChange) {
+  constructor(pointModel, pointContainer, onDataChange, onModeChange) {
     this.#pointContainer = pointContainer;
     this.#pointModel = pointModel;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(point) {
@@ -44,11 +48,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointContainer.contains(prevTripPoint.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#tripPoint, prevTripPoint);
     }
 
-    if (this.#pointContainer.contains(prevEditPoint.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editPoint, prevEditPoint);
     }
 
@@ -76,16 +80,25 @@ export default class PointPresenter {
 
   #replacePointToEdit() {
     replace(this.#editPoint, this.#tripPoint);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceEditToPoint() {
     replace(this.#tripPoint, this.#editPoint);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFavoriteClick = () => {
     const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
     this.#handleDataChange(updatedPoint);
   };
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceEditToPoint();
+    }
+  }
 
   destroy() {
     remove(this.#tripPoint);

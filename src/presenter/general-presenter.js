@@ -60,11 +60,16 @@ export default class GeneralPresenter {
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
   #renderPoint(point) {
     const pointPresenter = new PointPresenter(
       this.#pointModel,
       this.tripPointsContainerElement,
-      this.#handlePointChange
+      this.#handlePointChange,
+      this.#handleModeChange
     );
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
