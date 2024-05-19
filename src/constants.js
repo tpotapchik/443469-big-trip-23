@@ -1,4 +1,10 @@
-const SORTING_TYPES = ['Day', 'Event', 'Time', 'Price', 'Offers'];
+const SortingTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
 
 const FilterTypes = {
   EVERYTHING: 'Everything',
@@ -23,4 +29,4 @@ const Mode = {
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {SORTING_TYPES, FilterTypes, EventsMessages, Mode, EVENT_TYPES};
+export {FilterTypes, EventsMessages, Mode, EVENT_TYPES, SortingTypes};
