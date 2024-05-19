@@ -1,9 +1,15 @@
 import {SortingTypes} from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
+const TYPE_PREFIX = 'sort-';
+const DISABLED_SORT_TYPES = [SortingTypes.OFFERS, SortingTypes.EVENT];
+
 const createSortingItemTemplate = (type, currentSortType) => `
   <div class="trip-sort__item trip-sort__item--${type}">
-    <input id="sort-${type}" class="trip-sort__input visually-hidden" type="radio" name="trip-sort" data-sort-type="${type}" value="sort-${type}" ${type === currentSortType ? 'checked' : ''}>
+    <input id="sort-${type}" class="trip-sort__input visually-hidden" type="radio" name="trip-sort" value="sort-${type}"
+           ${type === currentSortType ? 'checked' : ''}
+           ${DISABLED_SORT_TYPES.includes(type) ? 'disabled' : ''}
+     >
     <label class="trip-sort__btn" for="sort-${type}">${type}</label>
   </div>
 `;
@@ -30,9 +36,7 @@ export default class Sorting extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'INPUT') {
-      return;
-    }
-    this.#handleSortTypeChange(evt.target.dataset.sortType);
+    const selectedSortType = evt.target.id.replace(TYPE_PREFIX, '');
+    this.#handleSortTypeChange(selectedSortType);
   };
 }

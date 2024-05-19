@@ -1,11 +1,12 @@
-import {SortingTypes} from '../constants.js';
-import {remove, render, RenderPosition} from '../framework/render.js';
+import {EventsMessages, SortingTypes} from '../constants.js';
 import {updateItem} from '../utils/common.js';
-import {generateFilters} from '../utils/filter-date.js';
 import {sortPoints} from '../utils/sorting-values.js';
+import {generateFilters} from '../utils/filter-date.js';
+import {remove, render, RenderPosition} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
+import TripEventsMessage from '../view/trip-events-message.js';
 import PointPresenter from './point-presenter.js';
 
 export default class GeneralPresenter {
@@ -35,7 +36,6 @@ export default class GeneralPresenter {
     this.#renderTripInfo();
     this.#renderFilters();
     this.#renderEventsBody();
-    this.#renderSort();
   }
 
   #renderSort() {
@@ -52,20 +52,12 @@ export default class GeneralPresenter {
   }
 
   #renderFilters() {
-    if (this.#filters !== null) {
-      remove(this.#filters);
-    }
-
     const filters = generateFilters(this.#primePoints);
     this.#filters = new Filters(filters);
     render(this.#filters, this.filtersSectionElement);
   }
 
   #renderTripInfo() {
-    if (this.#tripInfo !== null) {
-      remove(this.#tripInfo);
-    }
-
     this.#tripInfo = new TripInfo();
     render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
   }
@@ -73,13 +65,19 @@ export default class GeneralPresenter {
   #renderEventsBody() {
     this.#clearPoints();
     if (this.#primePoints.length === 0) {
-      render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+      this.#renderEmptyMessage();
       return;
     }
+    this.#renderSort();
 
     for (let i = 0; i < this.#primePoints.length; i++) {
       this.#renderPoint(this.#primePoints[i]);
     }
+  }
+
+  #renderEmptyMessage() {
+    this.#tripEventsMessage = new TripEventsMessage(EventsMessages.EVERYTHING);
+    render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
   #handleSortTypeChange = (nextSortType) => {
