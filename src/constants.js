@@ -16,6 +16,11 @@ const EventsMessages = {
   LOADING: 'Loading...'
 };
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {SORTING_TYPES, FilterTypes, EventsMessages, EVENT_TYPES};
+export {SORTING_TYPES, FilterTypes, EventsMessages, Mode, EVENT_TYPES};
