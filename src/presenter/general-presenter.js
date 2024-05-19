@@ -1,4 +1,4 @@
-import {EventsMessages, SortingTypes} from '../constants.js';
+import {SortingTypes} from '../constants.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import {updateItem} from '../utils/common.js';
 import {generateFilters} from '../utils/filter-date.js';
@@ -6,7 +6,6 @@ import {sortPoints} from '../utils/sorting-values.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
-import TripEventsMessage from '../view/trip-events-message.js';
 import PointPresenter from './point-presenter.js';
 
 export default class GeneralPresenter {
