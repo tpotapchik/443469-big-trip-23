@@ -1,4 +1,4 @@
-const SortingTypes = {
+const SortingType = {
   DAY: 'day',
   EVENT: 'event',
   TIME: 'time',
@@ -6,14 +6,14 @@ const SortingTypes = {
   OFFERS: 'offers'
 };
 
-const FilterTypes = {
+const FilterType = {
   EVERYTHING: 'Everything',
   FUTURE: 'Future',
   PRESENT: 'Present',
   PAST: 'Past'
 };
 
-const EventsMessages = {
+const EventsMessage = {
   EVERYTHING: 'Click New Event to create your first point',
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
@@ -29,4 +29,4 @@ const Mode = {
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {FilterTypes, EventsMessages, Mode, EVENT_TYPES, SortingTypes};
+export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType};

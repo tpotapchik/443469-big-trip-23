@@ -1,4 +1,4 @@
-import {EventsMessages, SortingTypes} from '../constants.js';
+import {EventsMessage, SortingType} from '../constants.js';
 import {updateItem} from '../utils/common.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {generateFilters} from '../utils/filter-date.js';
@@ -17,7 +17,7 @@ export default class GeneralPresenter {
   #tripEventsMessage = null;
   #filters = null;
   #pointPresenters = new Map();
-  #activeSortType = SortingTypes.DAY;
+  #activeSortType = SortingType.DAY;
 
   constructor(pointModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -63,7 +63,7 @@ export default class GeneralPresenter {
   }
 
   #renderEventsBody() {
-    this.#clearPoints();
+    // this.#clearPoints();
     if (this.#primePoints.length === 0) {
       this.#renderEmptyMessage();
       return;
@@ -76,7 +76,7 @@ export default class GeneralPresenter {
   }
 
   #renderEmptyMessage() {
-    this.#tripEventsMessage = new TripEventsMessage(EventsMessages.EVERYTHING);
+    this.#tripEventsMessage = new TripEventsMessage(EventsMessage.EVERYTHING);
     render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
@@ -84,8 +84,8 @@ export default class GeneralPresenter {
     if (this.#activeSortType === nextSortType) {
       return;
     }
-
     this.#activeSortType = nextSortType;
+    this.#clearPoints();
     this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType);
     this.#renderEventsBody();
   };
@@ -113,6 +113,6 @@ export default class GeneralPresenter {
   #clearPoints() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
-    this.tripPointsContainerElement.innerHTML = '';
+    // this.tripPointsContainerElement.innerHTML = '';
   }
 }

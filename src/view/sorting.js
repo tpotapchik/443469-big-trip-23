@@ -1,8 +1,8 @@
-import {SortingTypes} from '../constants.js';
+import {SortingType} from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const TYPE_PREFIX = 'sort-';
-const DISABLED_SORT_TYPES = [SortingTypes.OFFERS, SortingTypes.EVENT];
+const DISABLED_SORT_TYPES = [SortingType.OFFERS, SortingType.EVENT];
 
 const createSortingItemTemplate = (type, currentSortType) => `
   <div class="trip-sort__item trip-sort__item--${type}">
@@ -16,7 +16,7 @@ const createSortingItemTemplate = (type, currentSortType) => `
 
 const createSortingTemplate = (currentSortType) => `
   <form class="trip-events__trip-sort trip-sort" action="#" method="get">
-    ${Object.values(SortingTypes).map((type) => createSortingItemTemplate(type, currentSortType)).join('').toLowerCase()}
+    ${Object.values(SortingType).map((type) => createSortingItemTemplate(type, currentSortType)).join('').toLowerCase()}
   </form>
 `;
 
