@@ -113,6 +113,5 @@ export default class GeneralPresenter {
   #clearPoints() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
-    // this.tripPointsContainerElement.innerHTML = '';
   }
 }
