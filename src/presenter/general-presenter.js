@@ -1,7 +1,8 @@
-import {EventsMessages} from '../constants.js';
+import {EventsMessage, SortingType} from '../constants.js';
 import {updateItem} from '../utils/common.js';
-import {render, RenderPosition} from '../framework/render.js';
+import {sortPoints} from '../utils/sorting-values.js';
 import {generateFilters} from '../utils/filter-date.js';
+import {remove, render, RenderPosition} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
@@ -14,7 +15,9 @@ export default class GeneralPresenter {
   #sorting = null;
   #tripInfo = null;
   #tripEventsMessage = null;
+  #filters = null;
   #pointPresenters = new Map();
+  #activeSortType = SortingType.DAY;
 
   constructor(pointModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -28,32 +31,64 @@ export default class GeneralPresenter {
   }
 
   init() {
-    this.#primePoints = [...this.#pointModel.points];
-    this.#sorting = new Sorting();
-    this.#tripInfo = new TripInfo();
-    this.#tripEventsMessage = new TripEventsMessage(EventsMessages.EVERYTHING);
-    render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
+    this.#clearPoints();
+    this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType);
+    this.#renderTripInfo();
     this.#renderFilters();
     this.#renderEventsBody();
   }
 
+  #renderSort() {
+    if (this.#sorting !== null) {
+      remove(this.#sorting);
+    }
+
+    this.#sorting = new Sorting({
+      activeSortType: this.#activeSortType,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+
+    render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+  }
+
   #renderFilters() {
     const filters = generateFilters(this.#primePoints);
-    render(new Filters(filters), this.filtersSectionElement);
+    this.#filters = new Filters(filters);
+    render(this.#filters, this.filtersSectionElement);
+  }
+
+  #renderTripInfo() {
+    this.#tripInfo = new TripInfo();
+    render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
   }
 
   #renderEventsBody() {
+    // this.#clearPoints();
     if (this.#primePoints.length === 0) {
-      render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+      this.#renderEmptyMessage();
       return;
     }
-
-    render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+    this.#renderSort();
 
     for (let i = 0; i < this.#primePoints.length; i++) {
       this.#renderPoint(this.#primePoints[i]);
     }
   }
+
+  #renderEmptyMessage() {
+    this.#tripEventsMessage = new TripEventsMessage(EventsMessage.EVERYTHING);
+    render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+  }
+
+  #handleSortTypeChange = (nextSortType) => {
+    if (this.#activeSortType === nextSortType) {
+      return;
+    }
+    this.#activeSortType = nextSortType;
+    this.#clearPoints();
+    this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType);
+    this.#renderEventsBody();
+  };
 
   #handlePointChange = (updatedPoint) => {
     this.#primePoints = updateItem(this.#primePoints, updatedPoint);
@@ -73,5 +108,10 @@ export default class GeneralPresenter {
     );
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
+  }
+
+  #clearPoints() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 }

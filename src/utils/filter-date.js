@@ -1,4 +1,4 @@
-import {FilterTypes} from '../constants.js';
+import {FilterType} from '../constants.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
@@ -9,10 +9,10 @@ const isPointPresent = ({dateFrom, dateTo}) => dayjs().isAfter(dateFrom) && dayj
 const isPointPast = ({dateTo}) => dayjs().isAfter(dateTo);
 
 const filterBy = {
-  [FilterTypes.EVERYTHING]: (points) => [...points],
-  [FilterTypes.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
-  [FilterTypes.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
-  [FilterTypes.PAST]: (points) => points.filter((point) => isPointPast(point)),
+  [FilterType.EVERYTHING]: (points) => [...points],
+  [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
+  [FilterType.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
+  [FilterType.PAST]: (points) => points.filter((point) => isPointPast(point)),
 };
 
 const generateFilters = (points) => Object.entries(filterBy).map(
