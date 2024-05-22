@@ -36,6 +36,7 @@ export default class PointPresenter {
 
     this.#editPoint = new EditPoint(
       this.#point,
+      this.#pointModel.offers,
       this.#pointModel.getOffersByType(this.#point.type),
       this.#pointModel.destinations,
       this.#pointModel.getDestinationsById(this.#point.destination),
