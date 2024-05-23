@@ -97,16 +97,19 @@ const createEditPointTemplate = (state, allDestinations) => {
         </section>
       ` : ''}
 
-      ${state.pointDestination.pictures.length > 0 ? `
+      ${state.pointDestination.description || state.pointDestination.pictures.length > 0 ? `
        <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${state.pointDestination?.description}</p>
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-           ${state.pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+        <p class="event__destination-description">${state.pointDestination.description}</p>
+
+        ${state.pointDestination.pictures.length > 0 ? `
+         <div class="event__photos-container">
+            <div class="event__photos-tape">
+             ${state.pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+            </div>
           </div>
-        </div>
-      </section>
+        ` : '' }
+        </section>
       ` : ''}
       </section>
     </form>
@@ -119,9 +122,11 @@ export default class EditPoint extends AbstractStatefulView {
   #handleEditSubmit = null;
   #handleEditClose = null;
   #allOffers = null;
+  #initialPoint = null;
 
   constructor(point, allOffers, typeOffers, allDestinations, pointDestination, onEditSubmit, onEditClose) {
     super();
+    this.#initialPoint = point;
     this._setState({
       point: {...point},
       typeOffers: {...typeOffers},
@@ -195,6 +200,14 @@ export default class EditPoint extends AbstractStatefulView {
       this.#handleEditClose({...this._state});
     }
   };
+
+  reset() {
+    this.updateElement({
+      point: {...this.#initialPoint},
+      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
+      pointDestination: this.#allDestinations.find((destination) => destination.id === this.#initialPoint.destination)
+    });
+  }
 
   //todo do we need this?
   static parsePointToState(point) {

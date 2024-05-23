@@ -64,12 +64,14 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#editPoint.reset();
       this.#replaceEditToPoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   };
 
   #hideEditorPoint = () => {
+    this.#editPoint.reset();
     this.#replaceEditToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -97,6 +99,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editPoint.reset();
       this.#replaceEditToPoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
