@@ -31,7 +31,7 @@ const createImageItemTemplate = (src, description) => `
   <img class="event__photo" src="${src}" alt="${description}">
 `;
 
-const createEditPointTemplate = (state, allDestinations, pointDestination) => {
+const createEditPointTemplate = (state, allDestinations) => {
   const {type, basePrice, dateFrom, dateTo, id, offers} = state.point;
 
   return (`
@@ -57,7 +57,7 @@ const createEditPointTemplate = (state, allDestinations, pointDestination) => {
           <label class="event__label  event__type-output" for="event-destination--${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-${id}">
+          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${state.pointDestination.name}" list="destination-list-${id}">
           <datalist id="destination-list-${id}">
            ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
@@ -97,13 +97,13 @@ const createEditPointTemplate = (state, allDestinations, pointDestination) => {
         </section>
       ` : ''}
 
-      ${pointDestination.pictures.length > 0 ? `
+      ${state.pointDestination.pictures.length > 0 ? `
        <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${pointDestination?.description}</p>
+        <p class="event__destination-description">${state.pointDestination?.description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+           ${state.pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
           </div>
         </div>
       </section>
@@ -116,7 +116,6 @@ const createEditPointTemplate = (state, allDestinations, pointDestination) => {
 
 export default class EditPoint extends AbstractStatefulView {
   #allDestinations = [];
-  #pointDestination = null;
   #handleEditSubmit = null;
   #handleEditClose = null;
   #allOffers = null;
@@ -125,18 +124,18 @@ export default class EditPoint extends AbstractStatefulView {
     super();
     this._setState({
       point: {...point},
-      typeOffers: {...typeOffers}
+      typeOffers: {...typeOffers},
+      pointDestination: {...pointDestination}
     });
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
-    this.#pointDestination = pointDestination;
     this.#handleEditSubmit = onEditSubmit;
     this.#handleEditClose = onEditClose;
     this._restoreHandlers();
   }
 
   get template() {
-    return createEditPointTemplate(this._state, this.#allDestinations, this.#pointDestination);
+    return createEditPointTemplate(this._state, this.#allDestinations);
   }
 
   _restoreHandlers() {
@@ -148,6 +147,9 @@ export default class EditPoint extends AbstractStatefulView {
 
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#eventTypeHandler);
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationTypeHandler);
   }
 
   #eventTypeHandler = (evt) => {
@@ -160,6 +162,20 @@ export default class EditPoint extends AbstractStatefulView {
         type: newType
       },
       typeOffers: {...typeOffers}
+    });
+  };
+
+
+  #destinationTypeHandler = (evt) => {
+    evt.preventDefault();
+    const newDestination = evt.target.value;
+    const typeDestination = this.#allDestinations.find((destination) => destination.name === newDestination);
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        destination: typeDestination.id
+      },
+      pointDestination: {...typeDestination}
     });
   };
 
@@ -177,6 +193,7 @@ export default class EditPoint extends AbstractStatefulView {
     }
   };
 
+  //todo do we need this?
   static parsePointToState(point) {
     return {...point};
   }
