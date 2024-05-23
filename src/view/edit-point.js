@@ -170,6 +170,10 @@ export default class EditPoint extends AbstractStatefulView {
     evt.preventDefault();
     const newDestination = evt.target.value;
     const typeDestination = this.#allDestinations.find((destination) => destination.name === newDestination);
+    if (!typeDestination) {
+      console.warn(`Destination with name "${newDestination}" not found.`);
+      return;
+    }
     this.updateElement({
       point: {
         ...this._state.point,
