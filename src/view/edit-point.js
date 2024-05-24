@@ -164,27 +164,52 @@ export default class EditPoint extends AbstractStatefulView {
     this.#setDatePicker();
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateStartPicker) {
+      this.#dateStartPicker.destroy();
+      this.#dateStartPicker = null;
+    }
+
+    if (this.#dateEndPicker) {
+      this.#dateEndPicker.destroy();
+      this.#dateEndPicker = null;
+    }
+  }
+
   #setDatePicker = () => {
     const startTime = this.element.querySelector('[name="event-start-time"]');
     const endTime = this.element.querySelector('[name="event-end-time"]');
 
+    const datePickerOptions = {
+      enableTime: true,
+      'time_24hr': true,
+      dateFormat: DateFormat.DATE_PICKER
+    };
+
     this.#dateStartPicker = flatpickr(
       startTime,
       {
-        enableTime: true,
-        'time_24hr': true,
-        dateFormat: DateFormat.DATE_PICKER
+        ...datePickerOptions,
+        onChange: this.#changeDateHandler('dateFrom'),
       }
     );
 
     this.#dateEndPicker = flatpickr(
       endTime,
       {
-        enableTime: true,
-        'time_24hr': true,
-        dateFormat: DateFormat.DATE_PICKER
+        ...datePickerOptions,
+        // minDate: this._state.point.dateFrom, //todo
+        onChange: this.#changeDateHandler('dateTo'),
       }
     );
+  };
+
+  #changeDateHandler = (date) => ([userDate]) => {
+    this._setState({
+      [date]: userDate
+    });
   };
 
   #eventTypeHandler = (evt) => {
@@ -199,7 +224,6 @@ export default class EditPoint extends AbstractStatefulView {
       typeOffers: {...typeOffers}
     });
   };
-
 
   #destinationTypeHandler = (evt) => {
     evt.preventDefault();
