@@ -1,5 +1,5 @@
-import {EVENT_TYPES} from '../constants.js';
-import {displayDateTime, DateFormats} from '../utils/date.js';
+import {EVENT_TYPES, DateFormats} from '../constants.js';
+import {displayDateTime} from '../utils/date.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 
@@ -124,8 +124,10 @@ export default class EditPoint extends AbstractStatefulView {
   #allDestinations = [];
   #handleEditSubmit = null;
   #handleEditClose = null;
-  #allOffers = null;
+  #allOffers = [];
   #initialPoint = null;
+  #dateStartPicker = null;
+  #dateEndPicker = null;
 
   constructor(point, allOffers, typeOffers, allDestinations, pointDestination, onEditSubmit, onEditClose) {
     super();
@@ -139,6 +141,7 @@ export default class EditPoint extends AbstractStatefulView {
     this.#allDestinations = allDestinations;
     this.#handleEditSubmit = onEditSubmit;
     this.#handleEditClose = onEditClose;
+    this.#setDatePicker();
     this._restoreHandlers();
   }
 
@@ -159,6 +162,29 @@ export default class EditPoint extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationTypeHandler);
   }
+
+  #setDatePicker = () => {
+    const startTime = this.element.querySelector('[name="event-start-time"]');
+    const endTime = this.element.querySelector('[name="event-end-time"]');
+
+    this.#dateStartPicker = flatpickr(
+      startTime,
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: DateFormats.DATE_PICKER
+      }
+    );
+
+    this.#dateEndPicker = flatpickr(
+      endTime,
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: DateFormats.DATE_PICKER
+      }
+    );
+  };
 
   #eventTypeHandler = (evt) => {
     evt.preventDefault();

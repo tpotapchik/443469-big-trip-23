@@ -1,3 +1,4 @@
+import {DateFormats} from '../constants.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
@@ -6,17 +7,6 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(duration);
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-const DateFormats = {
-  DATE_MONTH: 'MMM D',
-  DATE: 'YYYY-MM-DD',
-  TIME: 'HH:mm',
-  DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
-  DATE_TIME: 'DD/MM/YY HH:mm',
-  DAY: 'DD[d] HH[h] mm[m]',
-  HOURS: 'HH[h] mm[m]',
-  MINUTES: 'mm[m]'
-};
 
 const calculateDuration = (dateFrom, dateTo) => {
   const dateDelta = dayjs.duration(dayjs(dateTo).diff(dateFrom));
