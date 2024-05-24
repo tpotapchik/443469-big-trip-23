@@ -27,7 +27,7 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-const DateFormats = {
+const DateFormat = {
   DATE_MONTH: 'MMM D',
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
@@ -41,4 +41,4 @@ const DateFormats = {
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormats};
+export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat};

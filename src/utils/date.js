@@ -1,4 +1,4 @@
-import {DateFormats} from '../constants.js';
+import {DateFormat} from '../constants.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
@@ -21,19 +21,19 @@ const calculateDuration = (dateFrom, dateTo) => {
   });
 
   if (updatedDateDelta.days() > 0) {
-    return updatedDateDelta.format(DateFormats.DAY);
+    return updatedDateDelta.format(DateFormat.DAY);
   }
 
   if (updatedDateDelta.hours() > 0) {
-    return updatedDateDelta.format(DateFormats.HOURS);
+    return updatedDateDelta.format(DateFormat.HOURS);
   }
 
-  return updatedDateDelta.format(DateFormats.MINUTES);
+  return updatedDateDelta.format(DateFormat.MINUTES);
 };
 
-const displayDateMonth = (date) => date ? dayjs(date).format(DateFormats.DATE_MONTH) : '';
-const displayDate = (date) => date ? dayjs(date).format(DateFormats.DATE) : '';
-const displayTime = (time) => time ? dayjs(time).format(DateFormats.TIME) : '';
-const displayDateTime = (date, dateFormat = DateFormats.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
+const displayDateMonth = (date) => date ? dayjs(date).format(DateFormat.DATE_MONTH) : '';
+const displayDate = (date) => date ? dayjs(date).format(DateFormat.DATE) : '';
+const displayTime = (time) => time ? dayjs(time).format(DateFormat.TIME) : '';
+const displayDateTime = (date, dateFormat = DateFormat.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
 
-export {calculateDuration, displayDateMonth, displayDate, displayTime, displayDateTime, DateFormats};
+export {calculateDuration, displayDateMonth, displayDate, displayTime, displayDateTime, DateFormat};

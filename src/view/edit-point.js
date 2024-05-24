@@ -1,4 +1,4 @@
-import {EVENT_TYPES, DateFormats} from '../constants.js';
+import {EVENT_TYPES, DateFormat} from '../constants.js';
 import {displayDateTime} from '../utils/date.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
@@ -70,10 +70,10 @@ const createEditPointTemplate = (state, allDestinations) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-${id}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormats.DATE_TIME)}">
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormat.DATE_TIME)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormats.DATE_TIME)}">
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormat.DATE_TIME)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -141,7 +141,6 @@ export default class EditPoint extends AbstractStatefulView {
     this.#allDestinations = allDestinations;
     this.#handleEditSubmit = onEditSubmit;
     this.#handleEditClose = onEditClose;
-    this.#setDatePicker();
     this._restoreHandlers();
   }
 
@@ -161,6 +160,8 @@ export default class EditPoint extends AbstractStatefulView {
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationTypeHandler);
+
+    this.#setDatePicker();
   }
 
   #setDatePicker = () => {
@@ -172,7 +173,7 @@ export default class EditPoint extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true,
-        dateFormat: DateFormats.DATE_PICKER
+        dateFormat: DateFormat.DATE_PICKER
       }
     );
 
@@ -181,7 +182,7 @@ export default class EditPoint extends AbstractStatefulView {
       {
         enableTime: true,
         'time_24hr': true,
-        dateFormat: DateFormats.DATE_PICKER
+        dateFormat: DateFormat.DATE_PICKER
       }
     );
   };
