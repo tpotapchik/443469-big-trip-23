@@ -1,6 +1,9 @@
 import {EVENT_TYPES} from '../constants.js';
 import {displayDateTime, DateFormats} from '../utils/date.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
