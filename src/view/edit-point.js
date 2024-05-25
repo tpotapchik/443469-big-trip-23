@@ -192,7 +192,8 @@ export default class EditPoint extends AbstractStatefulView {
       startTime,
       {
         ...datePickerOptions,
-        onChange: this.#changeDateHandler('dateFrom'),
+        maxDate: this._state.point.dateTo,
+        onChange: this.#changeDateHandler('dateFrom')
       }
     );
 
@@ -200,8 +201,8 @@ export default class EditPoint extends AbstractStatefulView {
       endTime,
       {
         ...datePickerOptions,
-        // minDate: this._state.point.dateFrom, //todo
-        onChange: this.#changeDateHandler('dateTo'),
+        minDate: this._state.point.dateFrom,
+        onChange: this.#changeDateHandler('dateTo')
       }
     );
   };
@@ -210,6 +211,12 @@ export default class EditPoint extends AbstractStatefulView {
     this._setState({
       [date]: userDate
     });
+
+    if (date === 'dateFrom') {
+      this.#dateEndPicker.set('minDate', userDate);
+    } else if (date === 'dateTo') {
+      this.#dateStartPicker.set('maxDate', userDate);
+    }
   };
 
   #eventTypeHandler = (evt) => {
