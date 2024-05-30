@@ -27,6 +27,18 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const DateFormat = {
+  DATE_MONTH: 'MMM D',
+  DATE: 'YYYY-MM-DD',
+  TIME: 'HH:mm',
+  DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
+  DATE_TIME: 'DD/MM/YY HH:mm',
+  DAY: 'DD[d] HH[h] mm[m]',
+  HOURS: 'HH[h] mm[m]',
+  MINUTES: 'mm[m]',
+  DATE_PICKER: 'd/m/y H:i'
+};
+
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType};
+export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat};
