@@ -39,6 +39,18 @@ const DateFormat = {
   DATE_PICKER: 'd/m/y H:i'
 };
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT'
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat};
+export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType};

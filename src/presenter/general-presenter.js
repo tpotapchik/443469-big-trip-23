@@ -1,5 +1,4 @@
-import {EventsMessage, SortingType} from '../constants.js';
-import {updateItem} from '../utils/common.js';
+import {EventsMessage, SortingType, UserAction, UpdateType} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {generateFilters} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
@@ -28,14 +27,27 @@ export default class GeneralPresenter {
     this.tripPointsContainerElement.classList.add('trip-events__list');
     this.tripEventsSectionElement.appendChild(this.tripPointsContainerElement);
     this.#pointModel = pointModel;
+
+    this.#pointModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
     this.#clearPoints();
-    this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType);
     this.#renderTripInfo();
     this.#renderFilters();
     this.#renderEventsBody();
+  }
+
+  get points () {
+    return sortPoints(this.#pointModel.points, this.#activeSortType);
+  }
+
+  get destinations () {
+    return this.#pointModel.destinations;
+  }
+
+  get offers () {
+    return this.#pointModel.offers;
   }
 
   #renderSort() {
@@ -52,7 +64,7 @@ export default class GeneralPresenter {
   }
 
   #renderFilters() {
-    const filters = generateFilters(this.#primePoints);
+    const filters = generateFilters(this.points);
     this.#filters = new Filters(filters);
     render(this.#filters, this.filtersSectionElement);
   }
@@ -63,16 +75,12 @@ export default class GeneralPresenter {
   }
 
   #renderEventsBody() {
-    // this.#clearPoints();
-    if (this.#primePoints.length === 0) {
+    if (this.points.length === 0) {
       this.#renderEmptyMessage();
       return;
     }
     this.#renderSort();
-
-    for (let i = 0; i < this.#primePoints.length; i++) {
-      this.#renderPoint(this.#primePoints[i]);
-    }
+    this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
   }
 
   #renderEmptyMessage() {
@@ -80,30 +88,11 @@ export default class GeneralPresenter {
     render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
-  #handleSortTypeChange = (nextSortType) => {
-    if (this.#activeSortType === nextSortType) {
-      return;
-    }
-    this.#activeSortType = nextSortType;
-    this.#clearPoints();
-    this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType);
-    this.#renderEventsBody();
-  };
-
-  #handlePointChange = (updatedPoint) => {
-    this.#primePoints = updateItem(this.#primePoints, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
-  };
-
-  #handleModeChange = () => {
-    this.#pointPresenters.forEach((presenter) => presenter.resetView());
-  };
-
   #renderPoint(point) {
     const pointPresenter = new PointPresenter(
       this.#pointModel,
       this.tripPointsContainerElement,
-      this.#handlePointChange,
+      this.#handleViewAction,
       this.#handleModeChange
     );
     pointPresenter.init(point);
@@ -114,4 +103,54 @@ export default class GeneralPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
   }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointModel.deletePoint(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, updatePoint) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#pointPresenters.get(updatePoint.id).init(updatePoint, this.offers, this.destinations);
+        break;
+      case UpdateType.MINOR:
+        this.#clearPoints();
+        this.#renderEventsBody();
+        break;
+      case UpdateType.MAJOR:
+        // this.#clearContent({resetSortType: true}); //todo
+        this.#clearPoints();
+        this.#renderEventsBody();
+        break;
+    }
+  };
+
+  #handleSortTypeChange = (nextSortType) => {
+    if (this.#activeSortType === nextSortType) {
+      return;
+    }
+    this.#activeSortType = nextSortType;
+    this.#clearPoints();
+    this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType); //todo need?
+    this.#renderEventsBody();
+  };
+
+  // #handlePointChange = (updatedPoint) => { // remove
+  //   this.#primePoints = updateItem(this.#primePoints, updatedPoint);
+  //   this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  // };
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
 }
