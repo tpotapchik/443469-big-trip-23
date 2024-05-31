@@ -1,4 +1,4 @@
-import {Mode} from '../constants.js';
+import {Mode, UpdateType, UserAction} from '../constants.js';
 import {render, replace, remove} from '../framework/render.js';
 import TripPoint from '../view/trip-point.js';
 import EditPoint from '../view/edit-point.js';
@@ -42,6 +42,7 @@ export default class PointPresenter {
       this.#pointModel.getDestinationsById(this.#point.destination),
       () => this.#hideEditorPoint(),
       () => this.#hideEditorPoint(),
+      () => this.#handleDeleteClick()
     );
 
     if (prevTripPoint === null || prevEditPoint === null) {
@@ -93,8 +94,20 @@ export default class PointPresenter {
   }
 
   #handleFavoriteClick = () => {
-    const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
-    this.#handleDataChange(updatedPoint);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
+  };
+
+  #handleDeleteClick = () => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      this.#point
+    );
+    this.#replaceEditToPoint();
   };
 
   resetView() {
