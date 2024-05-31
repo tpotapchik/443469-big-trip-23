@@ -10,7 +10,6 @@ import PointPresenter from './point-presenter.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
-  #primePoints = [];
   #sorting = null;
   #tripInfo = null;
   #tripEventsMessage = null;
@@ -99,9 +98,19 @@ export default class GeneralPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
-  #clearPoints() {
+  // #renderWithoutContent = () => {
+  //   if (this.points.length === 0) {
+  //     render(this.#renderEmptyMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+  //   }
+  // };
+
+  #clearPoints({resetSortType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
+
+    if (resetSortType) {
+      this.#activeSortType = SortingType.DAY;
+    }
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -128,8 +137,7 @@ export default class GeneralPresenter {
         this.#renderEventsBody();
         break;
       case UpdateType.MAJOR:
-        // this.#clearContent({resetSortType: true}); //todo
-        this.#clearPoints();
+        this.#clearPoints({resetSortType: true});
         this.#renderEventsBody();
         break;
     }
@@ -141,14 +149,9 @@ export default class GeneralPresenter {
     }
     this.#activeSortType = nextSortType;
     this.#clearPoints();
-    this.#primePoints = sortPoints(this.#pointModel.points, this.#activeSortType); //todo need?
+    sortPoints(this.#pointModel.points, this.#activeSortType); //todo need?
     this.#renderEventsBody();
   };
-
-  // #handlePointChange = (updatedPoint) => { // remove
-  //   this.#primePoints = updateItem(this.#primePoints, updatedPoint);
-  //   this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
-  // };
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());

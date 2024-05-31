@@ -63,11 +63,13 @@ export default class PointPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#editPoint.reset();
-      this.#replaceEditToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    if (this.#editPoint) {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        this.#editPoint.reset();
+        this.#replaceEditToPoint();
+        document.removeEventListener('keydown', this.#escKeyDownHandler);
+      }
     }
   };
 
@@ -99,6 +101,7 @@ export default class PointPresenter {
       UpdateType.PATCH,
       {...this.#point, isFavorite: !this.#point.isFavorite}
     );
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #handleDeleteClick = () => {
@@ -121,5 +124,6 @@ export default class PointPresenter {
   destroy() {
     remove(this.#tripPoint);
     remove(this.#editPoint);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 }
