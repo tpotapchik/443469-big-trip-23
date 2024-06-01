@@ -61,7 +61,7 @@ const createEditPointTemplate = (state, allDestinations) => {
           <label class="event__label  event__type-output" for="event-destination--${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${state.pointDestination.name}" list="destination-list-${id}">
+          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${state.pointDestination.name || ''}" list="destination-list-${id}">
           <datalist id="destination-list-${id}">
            ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
@@ -101,7 +101,7 @@ const createEditPointTemplate = (state, allDestinations) => {
         </section>
       ` : ''}
 
-      ${state.pointDestination.description || state.pointDestination.pictures.length > 0 ? `
+      ${state.pointDestination.description || state.pointDestination.pictures?.length > 0 ? `
        <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${state.pointDestination.description}</p>

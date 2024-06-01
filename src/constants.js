@@ -53,4 +53,17 @@ const UpdateType = {
 
 const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType};
+const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
+
+const DEFAULT_POINT = {
+  id: 0,
+  basePrice: 0,
+  dateFrom: new Date().toISOString(),
+  dateTo: new Date().toISOString(),
+  destination: 0,
+  isFavorite: false,
+  offers: [],
+  type: DEFAULT_POINT_TYPE
+};
+
+export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT};
