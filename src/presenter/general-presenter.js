@@ -149,7 +149,7 @@ export default class GeneralPresenter {
     }
     this.#activeSortType = nextSortType;
     this.#clearPoints();
-    sortPoints(this.#pointModel.points, this.#activeSortType); //todo need?
+    sortPoints(this.#pointModel.points, this.#activeSortType);
     this.#renderEventsBody();
   };
 

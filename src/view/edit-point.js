@@ -36,6 +36,7 @@ const createImageItemTemplate = (src, description) => `
 
 const createEditPointTemplate = (state, allDestinations) => {
   const {type, basePrice, dateFrom, dateTo, id, offers} = state.point;
+  const typeOffers = state.typeOffers.offers ?? [];
 
   return (`
     <li class="trip-events__item">
@@ -91,7 +92,7 @@ const createEditPointTemplate = (state, allDestinations) => {
         </button>
       </header>
       <section class="event__details">
-      ${state.typeOffers.offers?.length > 0 ? `
+      ${typeOffers.length > 0 ? `
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
           <div class="event__available-offers">
@@ -163,6 +164,11 @@ export default class EditPoint extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationTypeHandler);
 
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeSelectedOffersHandler);
+
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#priceInputHandler);
+
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
 
     this.#setDatePicker();
@@ -213,7 +219,10 @@ export default class EditPoint extends AbstractStatefulView {
 
   #changeDateHandler = (date) => ([userDate]) => {
     this._setState({
-      [date]: userDate
+      point: {
+        ...this._state.point,
+        [date]: userDate
+      }
     });
 
     if (date === 'dateFrom') {
@@ -230,7 +239,8 @@ export default class EditPoint extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        type: newType
+        type: newType,
+        offers: []
       },
       typeOffers: {...typeOffers}
     });
@@ -249,6 +259,26 @@ export default class EditPoint extends AbstractStatefulView {
         destination: typeDestination.id
       },
       pointDestination: {...typeDestination}
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    const newPrice = evt.target.value;
+    this._setState({
+      point: {
+        ...this._state.point,
+        basePrice: newPrice
+      }
+    });
+  };
+
+  #changeSelectedOffersHandler = () => {
+    const selectedOffers = this.element.querySelectorAll('.event__offer-checkbox:checked');
+    this._setState({
+      point: {
+        ...this._state.point,
+        offers: Array.from(selectedOffers).map((item) => item.dataset.offerId)
+      }
     });
   };
 

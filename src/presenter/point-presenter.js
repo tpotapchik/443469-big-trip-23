@@ -40,7 +40,7 @@ export default class PointPresenter {
       this.#pointModel.getOffersByType(this.#point.type),
       this.#pointModel.destinations,
       this.#pointModel.getDestinationsById(this.#point.destination),
-      () => this.#hideEditorPoint(),
+      this.#handleFormSubmit,
       () => this.#hideEditorPoint(),
       () => this.#handleDeleteClick()
     );
@@ -102,6 +102,15 @@ export default class PointPresenter {
       {...this.#point, isFavorite: !this.#point.isFavorite}
     );
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFormSubmit = ({point}) => {
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+    this.#replaceEditToPoint();
   };
 
   #handleDeleteClick = () => {
