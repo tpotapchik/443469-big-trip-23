@@ -109,7 +109,6 @@ export default class GeneralPresenter {
 
   #removeEmptyMessage = () => {
     if (this.#tripEventsMessage) {
-      console.log(this.#tripEventsMessage);
       remove(this.#tripEventsMessage); // todo remove
     }
   };
