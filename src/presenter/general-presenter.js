@@ -77,6 +77,7 @@ export default class GeneralPresenter {
   }
 
   #createNewPoint = () => {
+    this.#removeEmptyMessage();
     this.#activeSortType = SortingType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
@@ -106,6 +107,13 @@ export default class GeneralPresenter {
     render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
+  #removeEmptyMessage = () => {
+    if (this.#tripEventsMessage) {
+      console.log(this.#tripEventsMessage);
+      remove(this.#tripEventsMessage); // todo remove
+    }
+  };
+
   #renderPoint(point) {
     const pointPresenter = new PointPresenter(
       this.#pointModel,
@@ -125,8 +133,8 @@ export default class GeneralPresenter {
 
   #clearPoints({resetSortType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
-    this.#pointPresenters.clear();
     this.#newPointPresenter.destroy();
+    this.#pointPresenters.clear();
 
     if (resetSortType) {
       this.#activeSortType = SortingType.DAY;
@@ -175,6 +183,7 @@ export default class GeneralPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
+    this.#newPointPresenter.destroy();
   };
 
   #handleNewPointFormClose = () => {

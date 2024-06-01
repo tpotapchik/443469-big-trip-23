@@ -38,7 +38,6 @@ const createImageItemTemplate = (src, description) => `
 const createEditPointTemplate = (state, allDestinations) => {
   const {type, basePrice, dateFrom, dateTo, id, offers} = state.point;
   const typeOffers = state.typeOffers.offers ?? [];
-  console.log(state);
 
   return (`
     <li class="trip-events__item">
@@ -238,9 +237,6 @@ export default class EditPoint extends AbstractStatefulView {
     evt.preventDefault();
     const newType = evt.target.value;
     const typeOffers = this.#allOffers.find((offer) => offer.type === newType);
-
-    console.log('Event type changed to:', newType);
-    console.log('Offers for new type:', typeOffers);
 
     this.updateElement({
       point: {

@@ -31,8 +31,6 @@ export default class NewPointPresenter {
       () => this.#hideEditorPoint(),
       () => this.#handleCancelClick()
     );
-    console.log(this.#point.type);
-    console.log(this.#pointModel.getOffersByType(this.#point.type));
 
     const newFormContainer = document.querySelector('.trip-events__list');
     render(this.#pointEditorComponent, newFormContainer, RenderPosition.AFTERBEGIN);
