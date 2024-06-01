@@ -9,7 +9,7 @@ export default class NewPointPresenter {
   #pointModel = null;
   #point = [];
 
-  constructor({ pointModel, onDataChange, onDestroy}) {
+  constructor({pointModel, onDataChange, onDestroy}) {
     this.#pointModel = pointModel;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
@@ -31,11 +31,11 @@ export default class NewPointPresenter {
       () => this.#hideEditorPoint(),
       () => this.#handleCancelClick()
     );
+    console.log(this.#point.type);
+    console.log(this.#pointModel.getOffersByType(this.#point.type));
 
     const newFormContainer = document.querySelector('.trip-events__list');
     render(this.#pointEditorComponent, newFormContainer, RenderPosition.AFTERBEGIN);
-
-    // render(this.#pointEditorComponent, this.#listComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
@@ -53,6 +53,10 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  #hideEditorPoint = () => {
+    this.destroy();
+  };
+
   #handleFormSubmit = ({point}) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
@@ -63,10 +67,6 @@ export default class NewPointPresenter {
   };
 
   #handleCancelClick = () => {
-    this.destroy();
-  };
-
-  #hideEditorPoint = () => {
     this.destroy();
   };
 

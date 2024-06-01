@@ -1,14 +1,15 @@
 import {EVENT_TYPES, DateFormat} from '../constants.js';
+import {capitalizeLetter} from '../utils/common.js';
 import {displayDateTime} from '../utils/date.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import flatpickr from 'flatpickr';
 
+import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const createEventTypeTemplate = (type, pointType, id) => `
   <div class="event__type-item">
-    <input id="event-type-${type.toLowerCase()}-${id}" class="event__type-input visually-hidden" type="radio" name="event-type-${id}" value="${type.toLowerCase()}" ${type.toLowerCase() === pointType ? 'checked' : ''}>
-    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-${id}">${type}</label>
+    <input id="event-type-${type}-${id}" class="event__type-input visually-hidden" type="radio" name="event-type-${id}" value="${type}" ${type === pointType ? 'checked' : ''}>
+    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${capitalizeLetter(type)}</label>
   </div>
 `;
 
@@ -37,6 +38,7 @@ const createImageItemTemplate = (src, description) => `
 const createEditPointTemplate = (state, allDestinations) => {
   const {type, basePrice, dateFrom, dateTo, id, offers} = state.point;
   const typeOffers = state.typeOffers.offers ?? [];
+  console.log(state);
 
   return (`
     <li class="trip-events__item">
@@ -61,7 +63,7 @@ const createEditPointTemplate = (state, allDestinations) => {
           <label class="event__label  event__type-output" for="event-destination--${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${state.pointDestination.name || ''}" list="destination-list-${id}">
+          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${state.pointDestination.name || ''}" list="destination-list-${id}" required>
           <datalist id="destination-list-${id}">
            ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
@@ -86,7 +88,7 @@ const createEditPointTemplate = (state, allDestinations) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__reset-btn" type="reset">${id ? 'Delete' : 'Cancel'}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -236,6 +238,10 @@ export default class EditPoint extends AbstractStatefulView {
     evt.preventDefault();
     const newType = evt.target.value;
     const typeOffers = this.#allOffers.find((offer) => offer.type === newType);
+
+    console.log('Event type changed to:', newType);
+    console.log('Offers for new type:', typeOffers);
+
     this.updateElement({
       point: {
         ...this._state.point,

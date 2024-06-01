@@ -51,7 +51,7 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
 
