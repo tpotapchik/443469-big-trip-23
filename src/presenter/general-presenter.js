@@ -1,44 +1,47 @@
-import {EventsMessage, SortingType, UserAction, UpdateType} from '../constants.js';
+import {EventsMessage, SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
-import {generateFilters} from '../utils/filter-date.js';
+import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
-import Filters from '../view/filters.js';
 import TripInfo from '../view/trip-info.js';
 import TripEventsMessage from '../view/trip-events-message.js';
 import PointPresenter from './point-presenter.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
+  #filterModel = null;
   #sorting = null;
   #tripInfo = null;
   #tripEventsMessage = null;
-  #filters = null;
   #pointPresenters = new Map();
   #activeSortType = SortingType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
-  constructor(pointModel) {
+  constructor(pointModel, filterModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
     this.tripEventsSectionElement = document.querySelector('.trip-events');
-    this.filtersSectionElement = document.querySelector('.trip-controls__filters');
 
     this.tripPointsContainerElement = document.createElement('ul');
     this.tripPointsContainerElement.classList.add('trip-events__list');
     this.tripEventsSectionElement.appendChild(this.tripPointsContainerElement);
     this.#pointModel = pointModel;
+    this.#filterModel = filterModel;
 
     this.#pointModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
     this.#clearPoints();
     this.#renderTripInfo();
-    this.#renderFilters();
     this.#renderEventsBody();
   }
 
   get points () {
-    return sortPoints(this.#pointModel.points, this.#activeSortType);
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointModel.points;
+    const filteredPoints = filterBy[this.#filterType](points);
+    return sortPoints(filteredPoints, this.#activeSortType);
   }
 
   get destinations () {
@@ -60,12 +63,6 @@ export default class GeneralPresenter {
     });
 
     render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderFilters() {
-    const filters = generateFilters(this.points);
-    this.#filters = new Filters(filters);
-    render(this.#filters, this.filtersSectionElement);
   }
 
   #renderTripInfo() {

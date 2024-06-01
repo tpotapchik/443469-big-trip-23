@@ -15,11 +15,4 @@ const filterBy = {
   [FilterType.PAST]: (points) => points.filter((point) => isPointPast(point)),
 };
 
-const generateFilters = (points) => Object.entries(filterBy).map(
-  ([filterType, filterPoints]) => ({
-    type: filterType,
-    hasPoints: filterPoints(points).length > 0,
-  }),
-);
-
-export {generateFilters};
+export {filterBy};
