@@ -56,10 +56,15 @@ export default class NewPointPresenter {
   };
 
   #handleFormSubmit = ({point}) => {
+    const newPoint = {
+      ...point,
+      id: crypto.randomUUID()
+    };
+
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      point,
+      newPoint,
     );
     this.destroy();
   };
