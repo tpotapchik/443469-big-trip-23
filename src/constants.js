@@ -13,11 +13,14 @@ const FilterType = {
   PAST: 'past'
 };
 
-const EventsMessage = {
-  EVERYTHING: 'Click New Event to create your first point',
-  PAST: 'There are no past events now',
-  PRESENT: 'There are no present events now',
-  FUTURE: 'There are no future events now',
+const FilterMessage = {
+  [FilterType.EVERYTHING]: 'Click "New Event" to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.PAST]: 'There are no past events now'
+};
+
+const EmptyMessage = {
   FAILED_LOAD: 'Failed to load latest route information',
   LOADING: 'Loading...'
 };
@@ -66,4 +69,4 @@ const DEFAULT_POINT = {
   type: DEFAULT_POINT_TYPE
 };
 
-export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT};
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage};

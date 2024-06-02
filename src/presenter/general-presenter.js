@@ -1,10 +1,10 @@
-import {EventsMessage, SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
+import {FilterMessage, SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import TripInfo from '../view/trip-info.js';
-import TripEventsMessage from '../view/trip-events-message.js';
+import TripFilterMessage from '../view/trip-events-message.js';
 import ButtonView from '../view/button.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -14,7 +14,7 @@ export default class GeneralPresenter {
   #filterModel = null;
   #sorting = null;
   #tripInfo = null;
-  #tripEventsMessage = null;
+  #tripFilterMessage = null;
   #newPointPresenter = null;
   #buttonComponent = null;
   #pointPresenters = new Map();
@@ -103,15 +103,16 @@ export default class GeneralPresenter {
   }
 
   #renderEmptyMessage() {
-    this.#tripEventsMessage = new TripEventsMessage(EventsMessage.EVERYTHING);
-    render(this.#tripEventsMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
+    this.#tripFilterMessage = new TripFilterMessage({filterType: this.#filterType});
+    render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
   }
 
-  #removeEmptyMessage = () => {
-    if (this.#tripEventsMessage) {
-      remove(this.#tripEventsMessage); // todo remove
+  #removeEmptyMessage() {
+    //todo
+    if (this.#tripFilterMessage) {
+      remove(this.#tripFilterMessage);
     }
-  };
+  }
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter(
@@ -123,12 +124,6 @@ export default class GeneralPresenter {
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
-
-  // #renderWithoutContent = () => {
-  //   if (this.points.length === 0) {
-  //     render(this.#renderEmptyMessage, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
-  //   }
-  // };
 
   #clearPoints({resetSortType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
