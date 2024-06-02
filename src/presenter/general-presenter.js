@@ -1,4 +1,4 @@
-import {FilterMessage, SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
+import {SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
