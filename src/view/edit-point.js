@@ -3,6 +3,7 @@ import {capitalizeLetter} from '../utils/common.js';
 import {displayDateTime} from '../utils/date.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
+import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -62,7 +63,7 @@ const createEditPointTemplate = (state, allDestinations) => {
           <label class="event__label  event__type-output" for="event-destination--${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${state.pointDestination.name || ''}" list="destination-list-${id}" required>
+          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${he.encode(state.pointDestination.name || '')}" list="destination-list-${id}" required>
           <datalist id="destination-list-${id}">
            ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
