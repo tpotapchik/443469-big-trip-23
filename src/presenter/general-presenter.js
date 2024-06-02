@@ -42,7 +42,6 @@ export default class GeneralPresenter {
   }
 
   init() {
-    this.#clearPoints();
     this.#renderTripInfo();
     this.#renderButton();
     this.#renderEventsBody();
@@ -77,10 +76,13 @@ export default class GeneralPresenter {
   }
 
   #createNewPoint = () => {
-    this.#removeEmptyMessage();
     this.#activeSortType = SortingType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
+
+    if (this.#tripFilterMessage) {
+      remove(this.#tripFilterMessage);
+    }
   };
 
   #renderTripInfo() {
@@ -89,10 +91,7 @@ export default class GeneralPresenter {
   }
 
   #renderEventsBody() {
-    if (this.points.length === 0) {
-      this.#renderEmptyMessage();
-      return;
-    }
+    this.#renderEmptyMessage();
     this.#renderSort();
     this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
   }
@@ -103,14 +102,9 @@ export default class GeneralPresenter {
   }
 
   #renderEmptyMessage() {
-    this.#tripFilterMessage = new TripFilterMessage({filterType: this.#filterType});
-    render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
-  }
-
-  #removeEmptyMessage() {
-    //todo
-    if (this.#tripFilterMessage) {
-      remove(this.#tripFilterMessage);
+    if (this.points.length === 0) {
+      this.#tripFilterMessage = new TripFilterMessage({filterType: this.#filterType});
+      render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
     }
   }
 
@@ -132,6 +126,10 @@ export default class GeneralPresenter {
 
     if (resetSortType) {
       this.#activeSortType = SortingType.DAY;
+    }
+
+    if (this.#tripFilterMessage) {
+      remove(this.#tripFilterMessage);
     }
   }
 
@@ -181,6 +179,7 @@ export default class GeneralPresenter {
   };
 
   #handleNewPointFormClose = () => {
+    this.#renderEmptyMessage();
     this.#buttonComponent.element.disabled = false;
   };
 
