@@ -1,4 +1,4 @@
-import {SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
+import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
@@ -17,6 +17,7 @@ export default class GeneralPresenter {
   #tripFilterMessage = null;
   #newPointPresenter = null;
   #buttonComponent = null;
+  #isLoading = true;
   #pointPresenters = new Map();
   #activeSortType = SortingType.DAY;
   #filterType = FilterType.EVERYTHING;
@@ -102,6 +103,12 @@ export default class GeneralPresenter {
   }
 
   #renderEmptyMessage() {
+    if (this.#isLoading) {
+      this.#tripFilterMessage = new TripFilterMessage({message: EmptyMessage.LOADING});
+      render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
+      return;
+    }
+
     if (this.points.length === 0) {
       this.#tripFilterMessage = new TripFilterMessage({filterType: this.#filterType});
       render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
@@ -158,6 +165,11 @@ export default class GeneralPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearPoints({resetSortType: true});
+        this.#renderEventsBody();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#tripFilterMessage);
         this.#renderEventsBody();
         break;
     }
