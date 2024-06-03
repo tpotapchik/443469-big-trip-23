@@ -69,4 +69,13 @@ const DEFAULT_POINT = {
   type: DEFAULT_POINT_TYPE
 };
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage};
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
+
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+
+const AUTHORIZATION = 'Basic pS2syipwcl1s11j';
+
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION};
