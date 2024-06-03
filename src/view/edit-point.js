@@ -84,7 +84,7 @@ const createEditPointTemplate = (state, allDestinations) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" min="1" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" min="1" max="100000" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -266,11 +266,10 @@ export default class EditPoint extends AbstractStatefulView {
   };
 
   #priceInputHandler = (evt) => {
-    const newPrice = evt.target.value;
     this._setState({
       point: {
         ...this._state.point,
-        basePrice: newPrice
+        basePrice: parseInt(evt.target.value, 10)
       }
     });
   };
