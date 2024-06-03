@@ -1,7 +1,5 @@
-import {points} from '../mock/points.js';
-import {destinations} from '../mock/destinations.js';
-import {offers} from '../mock/offers.js';
 import Observable from '../framework/observable.js';
+import {UpdateType} from '../constants.js';
 
 export default class PointModel extends Observable {
   #pointsApiService = null;
@@ -11,24 +9,21 @@ export default class PointModel extends Observable {
 
   constructor({pointsApiService}) {
     super();
-    this.#points = [];
-    this.#destinations = [];
-    this.#offers = [];
     this.#pointsApiService = pointsApiService;
-
-    this.#pointsApiService.points.then((points) => {
-      console.log(points);
-      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-      // а ещё на сервере используется snake_case, а у нас camelCase.
-      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-      // Есть вариант получше - паттерн "Адаптер"
-    });
   }
 
-  init() {
-    this.#points = points;
-    this.#destinations = destinations;
-    this.#offers = offers;
+  async init() {
+    try {
+      this.#points = await this.#pointsApiService.getPoints();
+      this.#offers = await this.#pointsApiService.getOffers();
+      this.#destinations = await this.#pointsApiService.getDestinations();
+    } catch {
+      this.#points = [];
+      this.#offers = [];
+      this.#destinations = [];
+    }
+
+    this._notify(UpdateType.INIT);
   }
 
   get points() {
@@ -72,7 +67,7 @@ export default class PointModel extends Observable {
 
   getOffersByType(type) {
     const allOffers = this.offers;
-    return allOffers.find((offer) => offer.type === type) || { offers: [] };
+    return allOffers.find((offer) => offer.type === type) || {offers: []};
   }
 
   getOffersById(type, itemId) {
@@ -86,5 +81,22 @@ export default class PointModel extends Observable {
   getDestinationsById(id) {
     const allDestination = this.destinations;
     return allDestination.find((item) => item.id === id);
+  }
+
+  #adaptToClient(point) {
+    const adaptedPoint = {
+      ...point,
+      basePrice: point['base_price'],
+      dateFrom: new Date(point['date_from']),
+      dateTo: new Date(point['date_to']),
+      isFavorite: point['is_favorite']
+    };
+
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
   }
 }
