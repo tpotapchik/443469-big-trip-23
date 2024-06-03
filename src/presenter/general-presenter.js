@@ -1,18 +1,20 @@
-import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage} from '../constants.js';
+import {SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import TripInfo from '../view/trip-info.js';
-import TripFilterMessage from '../view/trip-events-message.js';
+import TripFilterMessage from '../view/empty-message.js';
 import ButtonView from '../view/button.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
+import LoadingView from '../view/loading.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
   #filterModel = null;
   #sorting = null;
+  #loadingComponent = null;
   #tripInfo = null;
   #tripFilterMessage = null;
   #newPointPresenter = null;
@@ -76,6 +78,11 @@ export default class GeneralPresenter {
     render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
+  #renderLoading() {
+    this.#loadingComponent = new LoadingView();
+    render(this.#loadingComponent, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
+  }
+
   #createNewPoint = () => {
     this.#activeSortType = SortingType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
@@ -92,6 +99,10 @@ export default class GeneralPresenter {
   }
 
   #renderEventsBody() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     this.#renderEmptyMessage();
     this.#renderSort();
     this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
@@ -103,12 +114,6 @@ export default class GeneralPresenter {
   }
 
   #renderEmptyMessage() {
-    if (this.#isLoading) {
-      this.#tripFilterMessage = new TripFilterMessage({message: EmptyMessage.LOADING});
-      render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
-      return;
-    }
-
     if (this.points.length === 0) {
       this.#tripFilterMessage = new TripFilterMessage({filterType: this.#filterType});
       render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
@@ -169,7 +174,7 @@ export default class GeneralPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
-        remove(this.#tripFilterMessage);
+        remove(this.#loadingComponent);
         this.#renderEventsBody();
         break;
     }

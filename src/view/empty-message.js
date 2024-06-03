@@ -1,23 +1,21 @@
 import {FilterMessage} from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createTripFilterMessageTemplate = (message, filterType) => {
+const createTripFilterMessageTemplate = (filterType) => {
   const filterMessage = FilterMessage[filterType];
 
-  return `<p class="trip-events__msg">${message || filterMessage}</p>`;
+  return `<p class="trip-events__msg">${filterMessage}</p>`;
 };
 
 export default class TripFilterMessage extends AbstractView {
-  #message = null;
   #filterType = null;
 
-  constructor({message, filterType}) {
+  constructor({filterType}) {
     super();
-    this.#message = message;
     this.#filterType = filterType;
   }
 
   get template() {
-    return createTripFilterMessageTemplate(this.#message, this.#filterType);
+    return createTripFilterMessageTemplate(this.#filterType);
   }
 }
