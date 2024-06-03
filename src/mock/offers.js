@@ -43,5 +43,29 @@ export const offers = [
         price: 1
       }
     ]
-  }
+  },
+  {
+    type: 'bus',
+    offers: []
+  },
+  {
+    type: 'ship',
+    offers: []
+  },
+  {
+    type: 'drive',
+    offers: []
+  },
+  {
+    type: 'check-in',
+    offers: []
+  },
+  {
+    type: 'sightseeing',
+    offers: []
+  },
+  {
+    type: 'restaurant',
+    offers: []
+  },
 ];

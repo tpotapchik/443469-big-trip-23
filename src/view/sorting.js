@@ -16,7 +16,7 @@ const createSortingItemTemplate = (type, currentSortType) => `
 
 const createSortingTemplate = (currentSortType) => `
   <form class="trip-events__trip-sort trip-sort" action="#" method="get">
-    ${Object.values(SortingType).map((type) => createSortingItemTemplate(type, currentSortType)).join('').toLowerCase()}
+    ${Object.values(SortingType).map((type) => createSortingItemTemplate(type, currentSortType)).join('')}
   </form>
 `;
 

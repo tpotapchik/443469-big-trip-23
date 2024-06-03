@@ -7,17 +7,20 @@ const SortingType = {
 };
 
 const FilterType = {
-  EVERYTHING: 'Everything',
-  FUTURE: 'Future',
-  PRESENT: 'Present',
-  PAST: 'Past'
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
 };
 
-const EventsMessage = {
-  EVERYTHING: 'Click New Event to create your first point',
-  PAST: 'There are no past events now',
-  PRESENT: 'There are no present events now',
-  FUTURE: 'There are no future events now',
+const FilterMessage = {
+  [FilterType.EVERYTHING]: 'Click "New Event" to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.PAST]: 'There are no past events now'
+};
+
+const EmptyMessage = {
   FAILED_LOAD: 'Failed to load latest route information',
   LOADING: 'Loading...'
 };
@@ -39,6 +42,31 @@ const DateFormat = {
   DATE_PICKER: 'd/m/y H:i'
 };
 
-const EVENT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT'
+};
 
-export {FilterType, EventsMessage, Mode, EVENT_TYPES, SortingType, DateFormat};
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
+const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
+
+const DEFAULT_POINT = {
+  id: 0,
+  basePrice: 0,
+  dateFrom: new Date().toISOString(),
+  dateTo: new Date().toISOString(),
+  destination: 0,
+  isFavorite: false,
+  offers: [],
+  type: DEFAULT_POINT_TYPE
+};
+
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage};

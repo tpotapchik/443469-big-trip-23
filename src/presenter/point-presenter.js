@@ -1,4 +1,4 @@
-import {Mode} from '../constants.js';
+import {Mode, UpdateType, UserAction} from '../constants.js';
 import {render, replace, remove} from '../framework/render.js';
 import TripPoint from '../view/trip-point.js';
 import EditPoint from '../view/edit-point.js';
@@ -40,8 +40,9 @@ export default class PointPresenter {
       this.#pointModel.getOffersByType(this.#point.type),
       this.#pointModel.destinations,
       this.#pointModel.getDestinationsById(this.#point.destination),
+      this.#handleFormSubmit,
       () => this.#hideEditorPoint(),
-      () => this.#hideEditorPoint(),
+      () => this.#handleDeleteClick()
     );
 
     if (prevTripPoint === null || prevEditPoint === null) {
@@ -62,11 +63,13 @@ export default class PointPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#editPoint.reset();
-      this.#replaceEditToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    if (this.#editPoint) {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        this.#editPoint.reset();
+        this.#replaceEditToPoint();
+        document.removeEventListener('keydown', this.#escKeyDownHandler);
+      }
     }
   };
 
@@ -93,8 +96,30 @@ export default class PointPresenter {
   }
 
   #handleFavoriteClick = () => {
-    const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
-    this.#handleDataChange(updatedPoint);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFormSubmit = ({point}) => {
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+    this.#replaceEditToPoint();
+  };
+
+  #handleDeleteClick = () => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      this.#point
+    );
+    this.#replaceEditToPoint();
   };
 
   resetView() {
@@ -108,5 +133,6 @@ export default class PointPresenter {
   destroy() {
     remove(this.#tripPoint);
     remove(this.#editPoint);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 }
