@@ -5,25 +5,15 @@ export default class PointsApiService extends ApiService {
   async getPoints() {
     const response = await this._load({url: 'points'});
     const parsedResponse = await ApiService.parseResponse(response);
-    const adaptedPoints = parsedResponse.map(this.#adaptToClient);
-
-    return adaptedPoints;
+    return parsedResponse.map(this.#adaptToClient);
   }
 
   async getOffers() {
-    const response = await this._load({url: 'offers'});
-    const parsedResponse = await ApiService.parseResponse(response);
-    const adaptedOffers = parsedResponse.map(this.#adaptToClient);
-
-    return adaptedOffers;
+    return this._load({url: 'offers'}).then(ApiService.parseResponse);
   }
 
   async getDestinations() {
-    const response = await this._load({url: 'destinations'});
-    const parsedResponse = await ApiService.parseResponse(response);
-    const adaptedDestinations = parsedResponse.map(this.#adaptToClient);
-
-    return adaptedDestinations;
+    return this._load({url: 'destinations'}).then(ApiService.parseResponse);
   }
 
   async updatePoint(point) {
@@ -35,16 +25,34 @@ export default class PointsApiService extends ApiService {
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
+    return this.#adaptToClient(parsedResponse);
+  }
 
-    return parsedResponse;
+  async addPoint(point) {
+    const response = await this._load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'})
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+    return this.#adaptToClient(parsedResponse);
+  }
+
+  async deletePoint(point) {
+    return await this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE
+    });
   }
 
   #adaptToClient(point) {
     const adaptedPoint = {
       ...point,
       basePrice: point['base_price'],
-      dateFrom: new Date(point['date_from']),
-      dateTo: new Date(point['date_to']),
+      dateFrom: point['date_from'],
+      dateTo: point['date_to'],
       isFavorite: point['is_favorite']
     };
 
@@ -60,8 +68,8 @@ export default class PointsApiService extends ApiService {
     const adaptedPoint = {
       ...point,
       'base_price': point.basePrice,
-      'date_from': point.dateFrom.toISOString(),
-      'date_to': point.dateTo.toISOString(),
+      'date_from': point.dateFrom,
+      'date_to': point.dateTo,
       'is_favorite': point.isFavorite
     };
 

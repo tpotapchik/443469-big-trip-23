@@ -1,5 +1,6 @@
 import Observable from '../framework/observable.js';
 import {UpdateType} from '../constants.js';
+import {updateItem} from '../utils/common.js';
 
 export default class PointModel extends Observable {
   #pointsApiService = null;
@@ -38,31 +39,22 @@ export default class PointModel extends Observable {
     return this.#offers;
   }
 
-  updatePoint(updateType, updatePoint) {
-    const index = this.#points.findIndex((point) => point.id === updatePoint.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t update non-existent point');
-    }
-
-    this.#points = [...this.#points.slice(0, index), updatePoint, ...this.#points.slice(index + 1)];
-    this._notify(updateType, updatePoint);
+  async updatePoint(updateType, point) {
+    const updatedPoint = await this.#pointsApiService.updatePoint(point);
+    this.#points = updateItem(this.#points, updatedPoint);
+    this._notify(updateType, updatedPoint);
   }
 
-  addPoint(updateType, updatePoint) {
-    this.#points = [updatePoint, ...this.#points];
-    this._notify(updateType, updatePoint);
+  async addPoint(updateType, point) {
+    const newPoint = await this.#pointsApiService.addPoint(point);
+    this.#points.push(newPoint);
+    this._notify(updateType, point);
   }
 
-  deletePoint(updateType, updatePoint) {
-    const index = this.#points.findIndex((point) => point.id === updatePoint.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t delete non-existent point');
-    }
-
-    this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
-    this._notify(updateType, updatePoint);
+  async deletePoint(updateType, point) {
+    await this.#pointsApiService.deletePoint(point);
+    this.#points = this.#points.filter((item) => item.id !== point.id);
+    this._notify(updateType, point);
   }
 
   getOffersByType(type) {
@@ -81,22 +73,5 @@ export default class PointModel extends Observable {
   getDestinationsById(id) {
     const allDestination = this.destinations;
     return allDestination.find((item) => item.id === id);
-  }
-
-  #adaptToClient(point) {
-    const adaptedPoint = {
-      ...point,
-      basePrice: point['base_price'],
-      dateFrom: new Date(point['date_from']),
-      dateTo: new Date(point['date_to']),
-      isFavorite: point['is_favorite']
-    };
-
-    delete adaptedPoint['base_price'];
-    delete adaptedPoint['date_from'];
-    delete adaptedPoint['date_to'];
-    delete adaptedPoint['is_favorite'];
-
-    return adaptedPoint;
   }
 }
