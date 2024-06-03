@@ -60,7 +60,6 @@ const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-i
 const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
 
 const DEFAULT_POINT = {
-  id: 0,
   basePrice: 0,
   dateFrom: new Date().toISOString(),
   dateTo: new Date().toISOString(),
