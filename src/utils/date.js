@@ -9,26 +9,21 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const calculateDuration = (dateFrom, dateTo) => {
-  const dateDelta = dayjs.duration(dayjs(dateTo).diff(dateFrom));
+  const start = dayjs(dateFrom).startOf('minute');
+  const end = dayjs(dateTo).startOf('minute');
+  const differenceInMilliseconds = end.diff(start);
+  const eventDuration = dayjs.duration(differenceInMilliseconds);
+  const days = Math.floor(eventDuration.asDays());
+  const hours = eventDuration.hours();
+  const minutes = eventDuration.minutes();
 
-  const totalMonths = dateDelta.months() + dateDelta.years() * 12;
-  const totalDays = dayjs(dateFrom).add(totalMonths, 'months').diff(dayjs(dateFrom), 'days');
-
-  const updatedDateDelta = dayjs.duration({
-    days: totalDays,
-    hours: dateDelta.hours(),
-    minutes: dateDelta.minutes()
-  });
-
-  if (updatedDateDelta.days() > 0) {
-    return updatedDateDelta.format(DateFormat.DAY);
+  if (days > 0) {
+    return `${days.toString().padStart(2, '0')}D ${hours.toString().padStart(2, '0')}H ${minutes.toString().padStart(2, '0')}M`;
+  } else if (hours > 0) {
+    return `${hours.toString().padStart(2, '0')}H ${minutes.toString().padStart(2, '0')}M`;
+  } else {
+    return `${minutes}M`;
   }
-
-  if (updatedDateDelta.hours() > 0) {
-    return updatedDateDelta.format(DateFormat.HOURS);
-  }
-
-  return updatedDateDelta.format(DateFormat.MINUTES);
 };
 
 const displayDateMonth = (date) => date ? dayjs(date).format(DateFormat.DATE_MONTH) : '';

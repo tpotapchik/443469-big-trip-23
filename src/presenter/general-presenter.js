@@ -45,9 +45,8 @@ export default class GeneralPresenter {
   }
 
   init() {
-    this.#renderTripInfo();
     this.#renderButton();
-    this.#renderEventsBody();
+    this.#renderContent();
   }
 
   get points() {
@@ -98,14 +97,44 @@ export default class GeneralPresenter {
     render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
   }
 
-  #renderEventsBody() {
+  #renderPoints() {
+    this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
+  }
+
+  #renderContent() {
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
-    this.#renderEmptyMessage();
-    this.#renderSort();
-    this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
+
+    if (this.points.length === 0) {
+      this.#renderEmptyMessage();
+    }
+
+    if (this.points.length > 0) {
+      this.#renderSort();
+      this.#renderTripInfo();
+    }
+
+    this.#renderPoints();
+  }
+
+  #clearContent({resetSortType = false} = {}) {
+    this.#clearPoints();
+
+    if (resetSortType) {
+      this.#activeSortType = SortingType.DAY;
+    }
+
+    remove(this.#sorting);
+
+    if (this.#tripInfo) {
+      remove(this.#tripInfo);
+    }
+
+    if (this.#tripFilterMessage) {
+      remove(this.#tripFilterMessage);
+    }
   }
 
   #renderButton() {
@@ -131,18 +160,10 @@ export default class GeneralPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
-  #clearPoints({resetSortType = false} = {}) {
+  #clearPoints() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#newPointPresenter.destroy();
     this.#pointPresenters.clear();
-
-    if (resetSortType) {
-      this.#activeSortType = SortingType.DAY;
-    }
-
-    if (this.#tripFilterMessage) {
-      remove(this.#tripFilterMessage);
-    }
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -165,17 +186,17 @@ export default class GeneralPresenter {
         this.#pointPresenters.get(updatePoint.id).init(updatePoint, this.offers, this.destinations);
         break;
       case UpdateType.MINOR:
-        this.#clearPoints();
-        this.#renderEventsBody();
+        this.#clearContent();
+        this.#renderContent();
         break;
       case UpdateType.MAJOR:
-        this.#clearPoints({resetSortType: true});
-        this.#renderEventsBody();
+        this.#clearContent({resetSortType: true});
+        this.#renderContent();
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
-        this.#renderEventsBody();
+        this.#renderContent();
         break;
     }
   };
@@ -187,7 +208,7 @@ export default class GeneralPresenter {
     this.#activeSortType = nextSortType;
     this.#clearPoints();
     sortPoints(this.#pointModel.points, this.#activeSortType);
-    this.#renderEventsBody();
+    this.#renderPoints();
   };
 
   #handleModeChange = () => {

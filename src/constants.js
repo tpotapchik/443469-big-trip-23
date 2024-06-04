@@ -14,7 +14,7 @@ const FilterType = {
 };
 
 const FilterMessage = {
-  [FilterType.EVERYTHING]: 'Click "New Event" to create your first point',
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.PAST]: 'There are no past events now'
@@ -78,6 +78,6 @@ const Method = {
 
 const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
-const AUTHORIZATION = 'Basic pS2syiwcl1s11j';
+const AUTHORIZATION = 'Basic pS2sywcl1s11j';
 
 export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION};
