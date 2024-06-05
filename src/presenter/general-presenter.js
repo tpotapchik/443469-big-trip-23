@@ -1,7 +1,8 @@
-import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage} from '../constants.js';
+import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage, TimeLimit} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import Sorting from '../view/sorting.js';
 import TripInfo from '../view/trip-info.js';
 import TripFilterMessage from '../view/empty-message.js';
@@ -23,6 +24,10 @@ export default class GeneralPresenter {
   #pointPresenters = new Map();
   #activeSortType = SortingType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor(pointModel, filterModel) {
     this.tripInfoElement = document.querySelector('.trip-main');
@@ -196,6 +201,7 @@ export default class GeneralPresenter {
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     try {
       switch (actionType) {
         case UserAction.UPDATE_POINT:
@@ -213,6 +219,8 @@ export default class GeneralPresenter {
       }
     } catch (err) {
       this.#pointPresenters.get(update.id).setAborting();
+    } finally {
+      this.#uiBlocker.unblock();
     }
   };
 

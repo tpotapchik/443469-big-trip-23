@@ -55,6 +55,11 @@ const UpdateType = {
   INIT: 'INIT'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
@@ -80,4 +85,4 @@ const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 const AUTHORIZATION = 'Basic pS2syiwcl1s11j';
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION};
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION, TimeLimit};
