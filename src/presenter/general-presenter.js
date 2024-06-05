@@ -5,11 +5,10 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import Sorting from '../view/sorting.js';
 import TripInfo from '../view/trip-info.js';
-import TripFilterMessage from '../view/empty-message.js';
+import EmptyTripMessage from '../view/empty-message.js';
 import ButtonView from '../view/button.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
-import LoadingView from '../view/loading.js';
 
 export default class GeneralPresenter {
   #pointModel = null;
@@ -18,6 +17,7 @@ export default class GeneralPresenter {
   #loadingComponent = null;
   #tripInfo = null;
   #tripFilterMessage = null;
+  #errorMessage = null;
   #newPointPresenter = null;
   #buttonComponent = null;
   #isLoading = true;
@@ -90,11 +90,6 @@ export default class GeneralPresenter {
     render(this.#sorting, this.tripEventsSectionElement, RenderPosition.AFTERBEGIN);
   }
 
-  #renderLoading() {
-    this.#loadingComponent = new LoadingView();
-    render(this.#loadingComponent, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
-  }
-
   #createNewPoint = () => {
     this.#activeSortType = SortingType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
@@ -125,6 +120,11 @@ export default class GeneralPresenter {
     this.#renderPoints();
   }
 
+  #renderLoading() {
+    this.#loadingComponent = new EmptyTripMessage({message: EmptyMessage.LOADING});
+    render(this.#loadingComponent, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
+  }
+
   #setInterfaceState = () => {
     if (this.loading) {
       this.#renderLoading();
@@ -136,13 +136,16 @@ export default class GeneralPresenter {
     }
 
     if (this.error) {
-      //todo render Failed load info
-      console.log(EmptyMessage.FAILED_LOAD);
+      this.#errorMessage = new EmptyTripMessage({message: EmptyMessage.FAILED_LOAD});
+      render(this.#errorMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
       this.#deactivateButton();
       return;
     }
 
-    this.#renderEmptyMessage();
+    if (this.points.length === 0) {
+      this.#tripFilterMessage = new EmptyTripMessage({filterType: this.#filterType});
+      render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
+    }
   };
 
   #activateButton = () => {
@@ -174,13 +177,6 @@ export default class GeneralPresenter {
   #renderButton() {
     this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
     render(this.#buttonComponent, this.tripInfoElement, RenderPosition.BEFOREEND);
-  }
-
-  #renderEmptyMessage() {
-    if (this.points.length === 0) {
-      this.#tripFilterMessage = new TripFilterMessage({filterType: this.#filterType});
-      render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
-    }
   }
 
   #renderPoint(point) {
@@ -238,7 +234,7 @@ export default class GeneralPresenter {
         this.#renderContent();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;//?
+        this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderContent();
         break;
