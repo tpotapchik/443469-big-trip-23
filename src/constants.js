@@ -52,6 +52,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -59,14 +60,24 @@ const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-i
 const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
 
 const DEFAULT_POINT = {
-  id: 0,
   basePrice: 0,
   dateFrom: new Date().toISOString(),
-  dateTo: new Date().toISOString(),
+  dateTo: new Date(new Date().getTime() + 60 * 1000).toISOString(),
   destination: 0,
   isFavorite: false,
   offers: [],
   type: DEFAULT_POINT_TYPE
 };
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage};
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
+};
+
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+
+const AUTHORIZATION = 'Basic pS2syiwcl1s11j';
+
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION};
