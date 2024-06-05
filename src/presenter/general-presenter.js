@@ -1,4 +1,4 @@
-import {SortingType, UserAction, UpdateType, FilterType} from '../constants.js';
+import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
@@ -44,12 +44,6 @@ export default class GeneralPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  init() {
-    this.#renderTripInfo();
-    this.#renderButton();
-    this.#renderEventsBody();
-  }
-
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
@@ -63,6 +57,19 @@ export default class GeneralPresenter {
 
   get offers() {
     return this.#pointModel.offers;
+  }
+
+  get loading() {
+    return this.#pointModel.loading;
+  }
+
+  get error() {
+    return this.#pointModel.error;
+  }
+
+  init() {
+    this.#renderButton();
+    this.#renderContent();
   }
 
   #renderSort() {
@@ -98,14 +105,65 @@ export default class GeneralPresenter {
     render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
   }
 
-  #renderEventsBody() {
-    if (this.#isLoading) {
+  #renderPoints() {
+    this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
+  }
+
+  #renderContent() {
+    this.#setInterfaceState();
+
+    if (this.points.length > 0) {
+      this.#renderSort();
+      this.#renderTripInfo();
+    }
+
+    this.#renderPoints();
+  }
+
+  #setInterfaceState = () => {
+    if (this.loading) {
       this.#renderLoading();
+      this.#deactivateButton();
+      return;
+    } else {
+      remove(this.#loadingComponent);
+      this.#activateButton();
+    }
+
+    if (this.error) {
+      //todo render Failed load info
+      console.log(EmptyMessage.FAILED_LOAD);
+      this.#deactivateButton();
       return;
     }
+
     this.#renderEmptyMessage();
-    this.#renderSort();
-    this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
+  };
+
+  #activateButton = () => {
+    this.#buttonComponent.element.disabled = false;
+  };
+
+  #deactivateButton = () => {
+    this.#buttonComponent.element.disabled = true;
+  };
+
+  #clearContent({resetSortType = false} = {}) {
+    this.#clearPoints();
+
+    if (resetSortType) {
+      this.#activeSortType = SortingType.DAY;
+    }
+
+    remove(this.#sorting);
+
+    if (this.#tripInfo) {
+      remove(this.#tripInfo);
+    }
+
+    if (this.#tripFilterMessage) {
+      remove(this.#tripFilterMessage);
+    }
   }
 
   #renderButton() {
@@ -131,18 +189,10 @@ export default class GeneralPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
-  #clearPoints({resetSortType = false} = {}) {
+  #clearPoints() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#newPointPresenter.destroy();
     this.#pointPresenters.clear();
-
-    if (resetSortType) {
-      this.#activeSortType = SortingType.DAY;
-    }
-
-    if (this.#tripFilterMessage) {
-      remove(this.#tripFilterMessage);
-    }
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -165,17 +215,17 @@ export default class GeneralPresenter {
         this.#pointPresenters.get(updatePoint.id).init(updatePoint, this.offers, this.destinations);
         break;
       case UpdateType.MINOR:
-        this.#clearPoints();
-        this.#renderEventsBody();
+        this.#clearContent();
+        this.#renderContent();
         break;
       case UpdateType.MAJOR:
-        this.#clearPoints({resetSortType: true});
-        this.#renderEventsBody();
+        this.#clearContent({resetSortType: true});
+        this.#renderContent();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;
+        this.#isLoading = false;//?
         remove(this.#loadingComponent);
-        this.#renderEventsBody();
+        this.#renderContent();
         break;
     }
   };
@@ -187,7 +237,7 @@ export default class GeneralPresenter {
     this.#activeSortType = nextSortType;
     this.#clearPoints();
     sortPoints(this.#pointModel.points, this.#activeSortType);
-    this.#renderEventsBody();
+    this.#renderPoints();
   };
 
   #handleModeChange = () => {
@@ -196,12 +246,12 @@ export default class GeneralPresenter {
   };
 
   #handleNewPointFormClose = () => {
-    this.#renderEmptyMessage();
-    this.#buttonComponent.element.disabled = false;
+    this.#setInterfaceState();
+    this.#deactivateButton();
   };
 
   #handleNewPointButtonClick = () => {
     this.#createNewPoint();
-    this.#buttonComponent.element.disabled = true;
+    this.#activateButton();
   };
 }
