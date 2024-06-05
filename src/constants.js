@@ -76,8 +76,13 @@ const Method = {
   DELETE: 'DELETE'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
 const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 const AUTHORIZATION = 'Basic pS2sywcl1s11j';
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION};
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION, TimeLimit};

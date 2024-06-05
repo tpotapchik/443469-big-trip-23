@@ -62,6 +62,55 @@ export default class PointPresenter {
     remove(prevEditPoint);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#editPoint.reset();
+      this.#replaceEditToPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  }
+
+  destroy() {
+    remove(this.#tripPoint);
+    remove(this.#editPoint);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPoint.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPoint.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#tripPoint.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#tripPoint.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPoint.shake(resetFormState);
+  }
+
   #escKeyDownHandler = (evt) => {
     if (this.#editPoint) {
       if (evt.key === 'Escape') {
@@ -121,18 +170,4 @@ export default class PointPresenter {
     );
     this.#replaceEditToPoint();
   };
-
-  resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
-      this.#editPoint.reset();
-      this.#replaceEditToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  }
-
-  destroy() {
-    remove(this.#tripPoint);
-    remove(this.#editPoint);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
 }

@@ -36,8 +36,15 @@ const createImageItemTemplate = (src, description) => `
   <img class="event__photo" src="${src}" alt="${description}">
 `;
 
+const setButtonCopy = (id, isDeleting) => {
+  if (id === 0) {
+    return 'Cancel';
+  }
+  return isDeleting ? 'Deleting...' : 'Delete';
+};
+
 const createEditPointTemplate = (state, allDestinations) => {
-  const {type, basePrice, dateFrom, dateTo, id, offers} = state.point;
+  const {type, basePrice, dateFrom, dateTo, id, offers, isDisabled, isSaving, isDeleting} = state.point;
   const typeOffers = state.typeOffers.offers ?? [];
 
   return (`
@@ -49,7 +56,7 @@ const createEditPointTemplate = (state, allDestinations) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -63,7 +70,7 @@ const createEditPointTemplate = (state, allDestinations) => {
           <label class="event__label  event__type-output" for="event-destination--${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination--${id}" type="text" name="event-destination" value="${he.encode(state.pointDestination.name || '')}" list="destination-list-${id}" required>
+          <input class="event__input  event__input--destination" ${isDisabled ? 'disabled' : ''} id="event-destination--${id}" type="text" name="event-destination" value="${he.encode(state.pointDestination.name || '')}" list="destination-list-${id}" required>
           <datalist id="destination-list-${id}">
            ${allDestinations.map((item) => `
             <option value="${item.name}"></option>
@@ -73,10 +80,10 @@ const createEditPointTemplate = (state, allDestinations) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-${id}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormat.DATE_TIME)}" required>
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormat.DATE_TIME)}" required ${isDisabled ? 'disabled' : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormat.DATE_TIME)}" required>
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormat.DATE_TIME)}" required ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -87,8 +94,8 @@ const createEditPointTemplate = (state, allDestinations) => {
           <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" min="1" max="100000" value="${basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${id ? 'Delete' : 'Cancel'}</button>
+        <button class="event__save-btn btn btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset">${setButtonCopy(id, isDeleting)}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -139,7 +146,10 @@ export default class EditPoint extends AbstractStatefulView {
     this._setState({
       point: {...point},
       typeOffers: {...typeOffers},
-      pointDestination: {...pointDestination}
+      pointDestination: {...pointDestination},
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
     });
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
@@ -188,6 +198,15 @@ export default class EditPoint extends AbstractStatefulView {
       this.#dateEndPicker.destroy();
       this.#dateEndPicker = null;
     }
+  }
+
+
+  reset() {
+    this.updateElement({
+      point: {...this.#initialPoint},
+      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
+      pointDestination: this.#allDestinations.find((destination) => destination.id === this.#initialPoint.destination)
+    });
   }
 
   #setDatePicker = () => {
@@ -302,14 +321,6 @@ export default class EditPoint extends AbstractStatefulView {
     evt.preventDefault();
     this.#handleDeleteClick({...this._state});
   };
-
-  reset() {
-    this.updateElement({
-      point: {...this.#initialPoint},
-      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
-      pointDestination: this.#allDestinations.find((destination) => destination.id === this.#initialPoint.destination)
-    });
-  }
 
   //todo do we need this?
   static parsePointToState(point) {
