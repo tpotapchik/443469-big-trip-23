@@ -37,7 +37,7 @@ const createImageItemTemplate = (src, description) => `
 `;
 
 const setButtonCopy = (id, isDeleting) => {
-  if (id === 0) {
+  if (!id) {
     return 'Cancel';
   }
   return isDeleting ? 'Deleting...' : 'Delete';

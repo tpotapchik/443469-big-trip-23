@@ -66,8 +66,8 @@ const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
 
 const DEFAULT_POINT = {
   basePrice: 0,
-  dateFrom: new Date().toISOString(),
-  dateTo: new Date(new Date().getTime() + 60 * 1000).toISOString(),
+  dateFrom: '',
+  dateTo: '',
   destination: 0,
   isFavorite: false,
   offers: [],

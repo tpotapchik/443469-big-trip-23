@@ -196,28 +196,37 @@ export default class GeneralPresenter {
     this.#pointPresenters.clear();
   }
 
-  #handleViewAction = async (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, point) => {
     this.#uiBlocker.block();
-    try {
-      switch (actionType) {
-        case UserAction.UPDATE_POINT:
-          this.#pointPresenters.get(update.id).setSaving();
-          await this.#pointModel.updatePoint(updateType, update);
-          break;
-        case UserAction.ADD_POINT:
-          this.#newPointPresenter.setSaving();
-          await this.#pointModel.addPoint(updateType, update);
-          break;
-        case UserAction.DELETE_POINT:
-          this.#pointPresenters.get(update.id).setDeleting();
-          await this.#pointModel.deletePoint(updateType, update);
-          break;
-      }
-    } catch (err) {
-      this.#pointPresenters.get(update.id).setAborting();
-    } finally {
-      this.#uiBlocker.unblock();
+
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointPresenters.get(point.id).setSaving();
+        try {
+          await this.#pointModel.updatePoint(updateType, point);
+        } catch (err) {
+          this.#pointPresenters.get(point.id).setAborting();
+        }
+        break;
+      case UserAction.ADD_POINT:
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointModel.addPoint(updateType, point);
+        } catch (err) {
+          this.#newPointPresenter.setAborting();
+        }
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointPresenters.get(point.id).setDeleting();
+        try {
+          await this.#pointModel.deletePoint(updateType, point);
+        } catch (err) {
+          this.#pointPresenters.get(point.id).setAborting();
+        }
+        break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, updatePoint) => {
@@ -258,11 +267,11 @@ export default class GeneralPresenter {
 
   #handleNewPointFormClose = () => {
     this.#setInterfaceState();
-    this.#deactivateButton();
+    this.#activateButton();
   };
 
   #handleNewPointButtonClick = () => {
     this.#createNewPoint();
-    this.#activateButton();
+    this.#deactivateButton();
   };
 }
