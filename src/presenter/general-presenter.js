@@ -195,20 +195,24 @@ export default class GeneralPresenter {
     this.#pointPresenters.clear();
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
-    switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#pointPresenters.get(update.id).setSaving();
-        this.#pointModel.updatePoint(updateType, update);
-        break;
-      case UserAction.ADD_POINT:
-        this.#newPointPresenter.setSaving();
-        this.#pointModel.addPoint(updateType, update);
-        break;
-      case UserAction.DELETE_POINT:
-        this.#pointPresenters.get(update.id).setDeleting();
-        this.#pointModel.deletePoint(updateType, update);
-        break;
+  #handleViewAction = async (actionType, updateType, update) => {
+    try {
+      switch (actionType) {
+        case UserAction.UPDATE_POINT:
+          this.#pointPresenters.get(update.id).setSaving();
+          await this.#pointModel.updatePoint(updateType, update);
+          break;
+        case UserAction.ADD_POINT:
+          this.#newPointPresenter.setSaving();
+          await this.#pointModel.addPoint(updateType, update);
+          break;
+        case UserAction.DELETE_POINT:
+          this.#pointPresenters.get(update.id).setDeleting();
+          await this.#pointModel.deletePoint(updateType, update);
+          break;
+      }
+    } catch (err) {
+      this.#pointPresenters.get(update.id).setAborting();
     }
   };
 

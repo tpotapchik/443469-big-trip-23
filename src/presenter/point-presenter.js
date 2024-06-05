@@ -101,7 +101,7 @@ export default class PointPresenter {
     }
 
     const resetFormState = () => {
-      this.#tripPoint.updateElement({
+      this.#editPoint.updateElement({
         isDisabled: false,
         isSaving: false,
         isDeleting: false,
