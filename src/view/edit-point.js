@@ -44,7 +44,9 @@ const setButtonCopy = (id, isDeleting) => {
 };
 
 const createEditPointTemplate = (state, allDestinations) => {
-  const {type, basePrice, dateFrom, dateTo, id, offers, isDisabled, isSaving, isDeleting} = state.point;
+  const {type, basePrice, dateFrom, dateTo, id, offers, isDisabled, isSaving, isDeleting } = state.point;
+
+  console.log(isSaving);
   const typeOffers = state.typeOffers.offers ?? [];
 
   return (`
@@ -121,7 +123,7 @@ const createEditPointTemplate = (state, allDestinations) => {
              ${state.pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
             </div>
           </div>
-        ` : '' }
+        ` : ''}
         </section>
       ` : ''}
       </section>
@@ -144,12 +146,9 @@ export default class EditPoint extends AbstractStatefulView {
     super();
     this.#initialPoint = point;
     this._setState({
-      point: {...point},
+      point: {...point, isDisabled: false, isSaving: false, isDeleting: false},
       typeOffers: {...typeOffers},
       pointDestination: {...pointDestination},
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false
     });
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
@@ -199,7 +198,6 @@ export default class EditPoint extends AbstractStatefulView {
       this.#dateEndPicker = null;
     }
   }
-
 
   reset() {
     this.updateElement({
@@ -306,7 +304,9 @@ export default class EditPoint extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     if (this.#handleEditSubmit) {
+      console.log({...this._state});
       this.#handleEditSubmit({...this._state});
+      // this.#handleEditSubmit(EditPoint.parseStateToPoint({...this._state}));
     }
   };
 
@@ -323,11 +323,25 @@ export default class EditPoint extends AbstractStatefulView {
   };
 
   //todo do we need this?
-  static parsePointToState(point) {
-    return {...point};
+  static parsePointToState(point, typeOffers, pointDestination) {
+    return {
+      point: {...point, isDisabled: false, isSaving: false, isDeleting: false},
+      typeOffers: {...typeOffers},
+      pointDestination: {...pointDestination},
+    };
   }
 
   static parseStateToPoint(state) {
-    return {...state};
+    const point = {
+      ...state.point,
+      typeOffers: state.typeOffers,
+      pointDestination: state.pointDestination
+    };
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+    return point;
   }
+
+
 }

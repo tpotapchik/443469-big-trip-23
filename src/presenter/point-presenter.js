@@ -159,6 +159,7 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
+    console.log(point);
     this.#replaceEditToPoint();
   };
 

@@ -1,4 +1,4 @@
-import {SortingType, UserAction, UpdateType, FilterType, TimeLimit} from '../constants.js';
+import {SortingType, UserAction, UpdateType, FilterType, TimeLimit, EmptyMessage} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
@@ -50,11 +50,6 @@ export default class GeneralPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  init() {
-    this.#renderButton();
-    this.#renderContent();
-  }
-
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointModel.points;
@@ -68,6 +63,19 @@ export default class GeneralPresenter {
 
   get offers() {
     return this.#pointModel.offers;
+  }
+
+  get loading() {
+    return this.#pointModel.loading;
+  }
+
+  get error() {
+    return this.#pointModel.error;
+  }
+
+  init() {
+    this.#renderButton();
+    this.#renderContent();
   }
 
   #renderSort() {
@@ -108,14 +116,15 @@ export default class GeneralPresenter {
   }
 
   #renderContent() {
-    if (this.#isLoading) {
-      this.#renderLoading();
-      return;
-    }
-
-    if (this.points.length === 0) {
-      this.#renderEmptyMessage();
-    }
+    // if (this.#isLoading) {
+    //   this.#renderLoading();
+    //   return;
+    // }
+    //
+    // if (this.points.length === 0) {
+    //   this.#renderEmptyMessage();
+    // }
+    this.#setInterfaceState();
 
     if (this.points.length > 0) {
       this.#renderSort();
@@ -124,6 +133,34 @@ export default class GeneralPresenter {
 
     this.#renderPoints();
   }
+
+  #setInterfaceState = () => {
+    if (this.loading) {
+      this.#renderLoading();
+      this.#deactivateButton();
+      return;
+    } else {
+      remove(this.#loadingComponent);
+      this.#activateButton();
+    }
+
+    if (this.error) {
+      //todo render Failed load info
+      console.log(EmptyMessage.FAILED_LOAD);
+      this.#deactivateButton();
+      return;
+    }
+
+    this.#renderEmptyMessage();
+  };
+
+  #activateButton = () => {
+    this.#buttonComponent.element.disabled = false;
+  };
+
+  #deactivateButton = () => {
+    this.#buttonComponent.element.disabled = true;
+  };
 
   #clearContent({resetSortType = false} = {}) {
     this.#clearPoints();
@@ -175,35 +212,42 @@ export default class GeneralPresenter {
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
 
-    switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#pointPresenters.get(update.id).setSaving();
-        try {
-          await this.#pointModel.updatePoint(updateType, update);
-        } catch (err) {
-          this.#pointPresenters.get(update.id).setAborting();
-        }
-        break;
-      case UserAction.ADD_POINT:
-        this.#newPointPresenter.setSaving();
-        try {
+    try {
+      switch (actionType) {
+        case UserAction.UPDATE_POINT:
+          if (update && update.id) {
+            this.#pointPresenters.get(update.point.id).setSaving();
+            await this.#pointModel.updatePoint(updateType, update);
+          } else {
+            console.error('Update object is invalid or missing id:', update.point.id);
+          }
+          break;
+        case UserAction.ADD_POINT:
+          this.#newPointPresenter.setSaving();
           await this.#pointModel.addPoint(updateType, update);
-        } catch (err) {
-          this.#newPointPresenter.setAborting();
-        }
-        break;
-      case UserAction.DELETE_POINT:
-        this.#pointPresenters.get(update.id).setDeleting();
-        try {
-          await this.#pointModel.deletePoint(updateType, update);
-        } catch (err) {
-          this.#pointPresenters.get(update.id).setAborting();
-        }
-        break;
+          break;
+        case UserAction.DELETE_POINT:
+          if (update && update.id) {
+            this.#pointPresenters.get(update.id).setDeleting();
+            await this.#pointModel.deletePoint(updateType, update);
+          } else {
+            console.error('Delete object is invalid or missing id:', update);
+          }
+          break;
+        default:
+          console.error('Unknown action type:', actionType);
+      }
+    } catch (err) {
+      if (update && update.id) {
+        this.#pointPresenters.get(update.id).setAborting();
+      } else {
+        console.error('Error handling action, update object is invalid or missing id:', update, err);
+      }
+    } finally {
+      this.#uiBlocker.unblock();
     }
-
-    this.#uiBlocker.unblock();
   };
+
 
   #handleModelEvent = (updateType, updatePoint) => {
     switch (updateType) {
@@ -219,7 +263,7 @@ export default class GeneralPresenter {
         this.#renderContent();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;
+        this.#isLoading = false;//?
         remove(this.#loadingComponent);
         this.#renderContent();
         break;
@@ -242,12 +286,12 @@ export default class GeneralPresenter {
   };
 
   #handleNewPointFormClose = () => {
-    this.#renderEmptyMessage();
-    this.#buttonComponent.element.disabled = false;
+    this.#setInterfaceState();
+    this.#deactivateButton();
   };
 
   #handleNewPointButtonClick = () => {
     this.#createNewPoint();
-    this.#buttonComponent.element.disabled = true;
+    this.#activateButton();
   };
 }

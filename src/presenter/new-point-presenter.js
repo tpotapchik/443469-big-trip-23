@@ -56,6 +56,7 @@ export default class NewPointPresenter {
       isDisabled: true,
       isSaving: true,
     });
+    console.log(this.#pointEditorComponent.state.isSaving);
   }
 
   setAborting() {
@@ -78,7 +79,7 @@ export default class NewPointPresenter {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      { ...point }
+      { ...point } //todo point or smth else
     );
     this.destroy();
   };
