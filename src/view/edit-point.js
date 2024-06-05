@@ -1,4 +1,4 @@
-import {EVENT_TYPES, DateFormat} from '../constants.js';
+import {DateFormat, EVENT_TYPES} from '../constants.js';
 import {capitalizeLetter} from '../utils/common.js';
 import {displayDateTime} from '../utils/date.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
@@ -111,10 +111,13 @@ const createEditPointTemplate = (state, allDestinations) => {
         ${state.pointDestination.pictures.length > 0 ? `
          <div class="event__photos-container">
             <div class="event__photos-tape">
-             ${state.pointDestination.pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
+             ${state.pointDestination.pictures.map(({
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            src,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            description
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }) => createImageItemTemplate(src, description)).join('')}
             </div>
           </div>
-        ` : '' }
+        ` : ''}
         </section>
       ` : ''}
       </section>
@@ -136,11 +139,7 @@ export default class EditPoint extends AbstractStatefulView {
   constructor(point, allOffers, typeOffers, allDestinations, pointDestination, onEditSubmit, onEditClose, onDeleteClick) {
     super();
     this.#initialPoint = point;
-    this._setState({
-      point: {...point},
-      typeOffers: {...typeOffers},
-      pointDestination: {...pointDestination}
-    });
+    this._setState(EditPoint.parsePointToState(point, typeOffers, pointDestination));
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#handleEditSubmit = onEditSubmit;
@@ -188,6 +187,14 @@ export default class EditPoint extends AbstractStatefulView {
       this.#dateEndPicker.destroy();
       this.#dateEndPicker = null;
     }
+  }
+
+  reset() {
+    this.updateElement({
+      point: {...this.#initialPoint},
+      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
+      pointDestination: this.#allDestinations.find((destination) => destination.id === this.#initialPoint.destination)
+    });
   }
 
   #setDatePicker = () => {
@@ -287,36 +294,36 @@ export default class EditPoint extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     if (this.#handleEditSubmit) {
-      this.#handleEditSubmit({...this._state});
+      this.#handleEditSubmit(EditPoint.parseStateToPoint(this._state));
     }
   };
 
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
     if (this.#handleEditClose) {
-      this.#handleEditClose({...this._state});
+      this.#handleEditClose(EditPoint.parseStateToPoint(this._state));
     }
   };
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick({...this._state});
+    this.#handleDeleteClick(EditPoint.parseStateToPoint(this._state));
   };
 
-  reset() {
-    this.updateElement({
-      point: {...this.#initialPoint},
-      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
-      pointDestination: this.#allDestinations.find((destination) => destination.id === this.#initialPoint.destination)
-    });
-  }
-
-  //todo do we need this?
-  static parsePointToState(point) {
-    return {...point};
+  static parsePointToState(point, typeOffers, pointDestination) {
+    return {
+      point: {...point},
+      typeOffers: {...typeOffers},
+      pointDestination: {...pointDestination},
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
+    };
   }
 
   static parseStateToPoint(state) {
-    return {...state};
+    return {
+      ...state.point,
+    };
   }
 }
