@@ -14,7 +14,7 @@ const FilterType = {
 };
 
 const FilterMessage = {
-  [FilterType.EVERYTHING]: 'Click "New Event" to create your first point',
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.PAST]: 'There are no past events now'
@@ -55,14 +55,19 @@ const UpdateType = {
   INIT: 'INIT'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DEFAULT_POINT_TYPE = EVENT_TYPES[5];
 
 const DEFAULT_POINT = {
   basePrice: 0,
-  dateFrom: new Date().toISOString(),
-  dateTo: new Date(new Date().getTime() + 60 * 1000).toISOString(),
+  dateFrom: '',
+  dateTo: '',
   destination: 0,
   isFavorite: false,
   offers: [],
@@ -80,4 +85,4 @@ const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 const AUTHORIZATION = 'Basic pS2syiwcl1s11j';
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION};
+export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION, TimeLimit};
