@@ -145,10 +145,11 @@ export default class PointPresenter {
   }
 
   #handleFavoriteClick = () => {
+    const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
       UpdateType.PATCH,
-      {...this.#point, isFavorite: !this.#point.isFavorite}
+      updatedPoint
     );
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -159,7 +160,6 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
-    // this.#replaceEditToPoint();
   };
 
   #handleDeleteClick = () => {
@@ -168,6 +168,5 @@ export default class PointPresenter {
       UpdateType.MINOR,
       this.#point
     );
-    // this.#replaceEditToPoint();
   };
 }

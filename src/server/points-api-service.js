@@ -2,18 +2,19 @@ import {Method} from '../constants.js';
 import ApiService from '../framework/api-service.js';
 
 export default class PointsApiService extends ApiService {
-  async getPoints() {
-    const response = await this._load({url: 'points'});
-    const parsedResponse = await ApiService.parseResponse(response);
-    return parsedResponse.map(this.#adaptToClient);
+  get points() {
+    return this._load({url: 'points'})
+      .then(ApiService.parseResponse);
   }
 
-  async getOffers() {
-    return this._load({url: 'offers'}).then(ApiService.parseResponse);
+  get destinations() {
+    return this._load({url: 'destinations'})
+      .then(ApiService.parseResponse);
   }
 
-  async getDestinations() {
-    return this._load({url: 'destinations'}).then(ApiService.parseResponse);
+  get offers() {
+    return this._load({url: 'offers'})
+      .then(ApiService.parseResponse);
   }
 
   async updatePoint(point) {
@@ -24,8 +25,7 @@ export default class PointsApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-    return this.#adaptToClient(parsedResponse);
+    return await ApiService.parseResponse(response);
   }
 
   async addPoint(point) {
@@ -36,8 +36,7 @@ export default class PointsApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'})
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-    return this.#adaptToClient(parsedResponse);
+    return await ApiService.parseResponse(response);
   }
 
   async deletePoint(point) {
@@ -45,23 +44,6 @@ export default class PointsApiService extends ApiService {
       url: `points/${point.id}`,
       method: Method.DELETE
     });
-  }
-
-  #adaptToClient(point) {
-    const adaptedPoint = {
-      ...point,
-      basePrice: point['base_price'],
-      dateFrom: point['date_from'],
-      dateTo: point['date_to'],
-      isFavorite: point['is_favorite']
-    };
-
-    delete adaptedPoint['base_price'];
-    delete adaptedPoint['date_from'];
-    delete adaptedPoint['date_to'];
-    delete adaptedPoint['is_favorite'];
-
-    return adaptedPoint;
   }
 
   #adaptToServer(point) {
