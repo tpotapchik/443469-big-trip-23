@@ -27,8 +27,9 @@ const calculateDuration = (dateFrom, dateTo) => {
 };
 
 const displayDateMonth = (date) => date ? dayjs(date).format(DateFormat.DATE_MONTH) : '';
+const displayMonthDay = (date) => date ? dayjs(date).format(DateFormat.MONTH_DAY) : '';
 const displayDate = (date) => date ? dayjs(date).format(DateFormat.DATE) : '';
 const displayTime = (time) => time ? dayjs(time).format(DateFormat.TIME) : '';
 const displayDateTime = (date, dateFormat = DateFormat.DATE_TIME_SYSTEM) => date ? dayjs(date).format(dateFormat) : '';
 
-export {calculateDuration, displayDateMonth, displayDate, displayTime, displayDateTime, DateFormat};
+export {calculateDuration, displayDateMonth, displayDate, displayTime, displayDateTime, displayMonthDay, DateFormat};

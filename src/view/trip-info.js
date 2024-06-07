@@ -1,4 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import {displayMonthDay} from '../utils/date.js';
 
 const renderTitle = (points, destinations) => {
   const destinationNames = points.map((point) => destinations.find((destination) => point.destination === destination.id))
@@ -11,13 +12,22 @@ const renderTitle = (points, destinations) => {
   return destinationNames.join(' — ');
 };
 
+const renderDates = (points) => {
+  const datesStart = points.map((point) => point.dateFrom);
+  const datesEnd = points.map((point) => point.dateTo);
+  const tripStart = displayMonthDay(datesStart[0]);
+  const tripEnd = displayMonthDay(datesEnd[datesEnd.length - 1]);
+
+  return `${tripStart} — ${tripEnd}`;
+};
+
 const createTripInfoTemplate = (points, offers, destinations) => `
 
   <section class="trip-main__trip-info trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${renderTitle(points, destinations)}</h1>
 
-      <p class="trip-info__dates">18&nbsp;&mdash;&nbsp;20 Mar</p>
+      <p class="trip-info__dates">${renderDates(points)}</p>
     </div>
 
     <p class="trip-info__cost">
@@ -39,9 +49,6 @@ export default class TripInfo extends AbstractView {
   }
 
   get template() {
-    // console.log(this.#points);
-    // console.log(this.#offers);
-    console.log(this.#destinations);
     return createTripInfoTemplate(this.#points, this.#offers, this.#destinations);
   }
 }

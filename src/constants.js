@@ -32,6 +32,7 @@ const Mode = {
 
 const DateFormat = {
   DATE_MONTH: 'MMM D',
+  MONTH_DAY: 'D MMM',
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
