@@ -6,6 +6,8 @@ const SortingType = {
   OFFERS: 'offers'
 };
 
+const defaultSortingType = SortingType.DAY;
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -86,4 +88,23 @@ const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 const AUTHORIZATION = 'Basic pS2syiwcl1s11j';
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION, TimeLimit};
+const MAX_DESTINATION_COUNT = 3;
+
+export {
+  FilterType,
+  FilterMessage,
+  Mode,
+  EVENT_TYPES,
+  SortingType,
+  defaultSortingType,
+  DateFormat,
+  UserAction,
+  UpdateType,
+  DEFAULT_POINT,
+  EmptyMessage,
+  Method,
+  END_POINT,
+  AUTHORIZATION,
+  TimeLimit,
+  MAX_DESTINATION_COUNT
+};

@@ -1,4 +1,11 @@
-import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage, TimeLimit} from '../constants.js';
+import {
+  UserAction,
+  UpdateType,
+  FilterType,
+  EmptyMessage,
+  TimeLimit,
+  defaultSortingType
+} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
@@ -20,7 +27,7 @@ export default class GeneralPresenter {
   #buttonComponent = null;
   #isLoading = true;
   #pointPresenters = new Map();
-  #activeSortType = SortingType.DAY;
+  #activeSortType = defaultSortingType;
   #filterType = FilterType.EVERYTHING;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -89,7 +96,7 @@ export default class GeneralPresenter {
   }
 
   #createNewPoint = () => {
-    this.#activeSortType = SortingType.DAY;
+    this.#activeSortType = defaultSortingType;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
 
@@ -152,7 +159,7 @@ export default class GeneralPresenter {
     this.#clearPoints();
 
     if (resetSortType) {
-      this.#activeSortType = SortingType.DAY;
+      this.#activeSortType = defaultSortingType;
     }
 
     remove(this.#sorting);
