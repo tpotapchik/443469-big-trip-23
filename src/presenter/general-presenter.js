@@ -4,7 +4,6 @@ import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import Sorting from '../view/sorting.js';
-import TripInfo from '../view/trip-info.js';
 import EmptyTripMessage from '../view/empty-message.js';
 import ButtonView from '../view/button.js';
 import PointPresenter from './point-presenter.js';
@@ -15,7 +14,6 @@ export default class GeneralPresenter {
   #filterModel = null;
   #sorting = null;
   #loadingComponent = null;
-  #tripInfo = null;
   #tripFilterMessage = null;
   #errorMessage = null;
   #newPointPresenter = null;
@@ -100,11 +98,6 @@ export default class GeneralPresenter {
     }
   };
 
-  #renderTripInfo() {
-    this.#tripInfo = new TripInfo();
-    render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
-  }
-
   #renderPoints() {
     this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
   }
@@ -114,7 +107,6 @@ export default class GeneralPresenter {
 
     if (this.points.length > 0) {
       this.#renderSort();
-      this.#renderTripInfo();
     }
 
     this.#renderPoints();
@@ -164,10 +156,6 @@ export default class GeneralPresenter {
     }
 
     remove(this.#sorting);
-
-    if (this.#tripInfo) {
-      remove(this.#tripInfo);
-    }
 
     if (this.#tripFilterMessage) {
       remove(this.#tripFilterMessage);
