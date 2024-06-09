@@ -6,6 +6,8 @@ const SortingType = {
   OFFERS: 'offers'
 };
 
+const defaultSortingType = SortingType.DAY;
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -32,6 +34,7 @@ const Mode = {
 
 const DateFormat = {
   DATE_MONTH: 'MMM D',
+  MONTH_DAY: 'D MMM',
   DATE: 'YYYY-MM-DD',
   TIME: 'HH:mm',
   DATE_TIME_SYSTEM: 'YYYY-MM-DDTHH:mm',
@@ -56,8 +59,8 @@ const UpdateType = {
 };
 
 const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000
+  LOWER: 350,
+  UPPER: 1000
 };
 
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -85,4 +88,23 @@ const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 const AUTHORIZATION = 'Basic pS2syiwcl1s11j';
 
-export {FilterType, FilterMessage, Mode, EVENT_TYPES, SortingType, DateFormat, UserAction, UpdateType, DEFAULT_POINT, EmptyMessage, Method, END_POINT, AUTHORIZATION, TimeLimit};
+const MAX_DESTINATION_COUNT = 3;
+
+export {
+  FilterType,
+  FilterMessage,
+  Mode,
+  EVENT_TYPES,
+  SortingType,
+  defaultSortingType,
+  DateFormat,
+  UserAction,
+  UpdateType,
+  DEFAULT_POINT,
+  EmptyMessage,
+  Method,
+  END_POINT,
+  AUTHORIZATION,
+  TimeLimit,
+  MAX_DESTINATION_COUNT
+};

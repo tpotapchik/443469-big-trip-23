@@ -1,10 +1,16 @@
-import {SortingType, UserAction, UpdateType, FilterType, EmptyMessage, TimeLimit} from '../constants.js';
+import {
+  UserAction,
+  UpdateType,
+  FilterType,
+  EmptyMessage,
+  TimeLimit,
+  defaultSortingType
+} from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import Sorting from '../view/sorting.js';
-import TripInfo from '../view/trip-info.js';
 import EmptyTripMessage from '../view/empty-message.js';
 import ButtonView from '../view/button.js';
 import PointPresenter from './point-presenter.js';
@@ -15,18 +21,17 @@ export default class GeneralPresenter {
   #filterModel = null;
   #sorting = null;
   #loadingComponent = null;
-  #tripInfo = null;
   #tripFilterMessage = null;
   #errorMessage = null;
   #newPointPresenter = null;
   #buttonComponent = null;
   #isLoading = true;
   #pointPresenters = new Map();
-  #activeSortType = SortingType.DAY;
+  #activeSortType = defaultSortingType;
   #filterType = FilterType.EVERYTHING;
   #uiBlocker = new UiBlocker({
-    lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
+    lowerLimit: TimeLimit.LOWER,
+    upperLimit: TimeLimit.UPPER
   });
 
   constructor(pointModel, filterModel) {
@@ -91,7 +96,7 @@ export default class GeneralPresenter {
   }
 
   #createNewPoint = () => {
-    this.#activeSortType = SortingType.DAY;
+    this.#activeSortType = defaultSortingType;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
 
@@ -99,11 +104,6 @@ export default class GeneralPresenter {
       remove(this.#tripFilterMessage);
     }
   };
-
-  #renderTripInfo() {
-    this.#tripInfo = new TripInfo();
-    render(this.#tripInfo, this.tripInfoElement, RenderPosition.AFTERBEGIN);
-  }
 
   #renderPoints() {
     this.points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
@@ -114,7 +114,6 @@ export default class GeneralPresenter {
 
     if (this.points.length > 0) {
       this.#renderSort();
-      this.#renderTripInfo();
     }
 
     this.#renderPoints();
@@ -160,14 +159,10 @@ export default class GeneralPresenter {
     this.#clearPoints();
 
     if (resetSortType) {
-      this.#activeSortType = SortingType.DAY;
+      this.#activeSortType = defaultSortingType;
     }
 
     remove(this.#sorting);
-
-    if (this.#tripInfo) {
-      remove(this.#tripInfo);
-    }
 
     if (this.#tripFilterMessage) {
       remove(this.#tripFilterMessage);
