@@ -30,8 +30,8 @@ export default class GeneralPresenter {
   #activeSortType = defaultSortingType;
   #filterType = FilterType.EVERYTHING;
   #uiBlocker = new UiBlocker({
-    lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
+    lowerLimit: TimeLimit.LOWER,
+    upperLimit: TimeLimit.UPPER
   });
 
   constructor(pointModel, filterModel) {
