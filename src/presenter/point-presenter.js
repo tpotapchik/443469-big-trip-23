@@ -111,16 +111,16 @@ export default class PointPresenter {
     this.#editPoint.shake(resetFormState);
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (this.#editPoint) {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        this.#editPoint.reset();
-        this.#replaceEditToPoint();
-        document.removeEventListener('keydown', this.#escKeyDownHandler);
-      }
-    }
-  };
+  #replacePointToEdit() {
+    replace(this.#editPoint, this.#tripPoint);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  }
+
+  #replaceEditToPoint() {
+    replace(this.#tripPoint, this.#editPoint);
+    this.#mode = Mode.DEFAULT;
+  }
 
   #hideEditorPoint = () => {
     this.#editPoint.reset();
@@ -133,16 +133,17 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #replacePointToEdit() {
-    replace(this.#editPoint, this.#tripPoint);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
-  }
 
-  #replaceEditToPoint() {
-    replace(this.#tripPoint, this.#editPoint);
-    this.#mode = Mode.DEFAULT;
-  }
+  #escKeyDownHandler = (evt) => {
+    if (!this.#editPoint || evt.key !== 'Escape') {
+      return;
+    }
+
+    evt.preventDefault();
+    this.#editPoint.reset();
+    this.#replaceEditToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
 
   #handleFavoriteClick = () => {
     const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};

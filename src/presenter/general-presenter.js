@@ -2,17 +2,17 @@ import {
   UserAction,
   UpdateType,
   FilterType,
-  EmptyMessage,
+  EmptyMessageText,
   TimeLimit,
-  defaultSortingType
+  DEFAULT_SORTING_TYPE
 } from '../constants.js';
 import {sortPoints} from '../utils/sorting-values.js';
 import {filterBy} from '../utils/filter-date.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import Sorting from '../view/sorting.js';
-import EmptyTripMessage from '../view/empty-message.js';
-import ButtonView from '../view/button.js';
+import EmptyMessage from '../view/empty-message.js';
+import Button from '../view/button.js';
 import PointPresenter from './point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 
@@ -27,7 +27,7 @@ export default class GeneralPresenter {
   #buttonComponent = null;
   #isLoading = true;
   #pointPresenters = new Map();
-  #activeSortType = defaultSortingType;
+  #activeSortType = DEFAULT_SORTING_TYPE;
   #filterType = FilterType.EVERYTHING;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER,
@@ -96,7 +96,7 @@ export default class GeneralPresenter {
   }
 
   #createNewPoint = () => {
-    this.#activeSortType = defaultSortingType;
+    this.#activeSortType = DEFAULT_SORTING_TYPE;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
 
@@ -120,7 +120,7 @@ export default class GeneralPresenter {
   }
 
   #renderLoading() {
-    this.#loadingComponent = new EmptyTripMessage({message: EmptyMessage.LOADING});
+    this.#loadingComponent = new EmptyMessage({message: EmptyMessageText.LOADING});
     render(this.#loadingComponent, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
   }
 
@@ -135,14 +135,14 @@ export default class GeneralPresenter {
     }
 
     if (this.error) {
-      this.#errorMessage = new EmptyTripMessage({message: EmptyMessage.FAILED_LOAD});
+      this.#errorMessage = new EmptyMessage({message: EmptyMessageText.FAILED_LOAD});
       render(this.#errorMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
       this.#deactivateButton();
       return;
     }
 
     if (this.points.length === 0) {
-      this.#tripFilterMessage = new EmptyTripMessage({filterType: this.#filterType});
+      this.#tripFilterMessage = new EmptyMessage({filterType: this.#filterType});
       render(this.#tripFilterMessage, this.tripEventsSectionElement, RenderPosition.BEFOREEND);
     }
   };
@@ -159,7 +159,7 @@ export default class GeneralPresenter {
     this.#clearPoints();
 
     if (resetSortType) {
-      this.#activeSortType = defaultSortingType;
+      this.#activeSortType = DEFAULT_SORTING_TYPE;
     }
 
     remove(this.#sorting);
@@ -170,7 +170,7 @@ export default class GeneralPresenter {
   }
 
   #renderButton() {
-    this.#buttonComponent = new ButtonView({onClick: this.#handleNewPointButtonClick});
+    this.#buttonComponent = new Button({onClick: this.#handleNewPointButtonClick});
     render(this.#buttonComponent, this.tripInfoElement, RenderPosition.BEFOREEND);
   }
 

@@ -1,12 +1,19 @@
-import {defaultSortingType, MAX_DESTINATION_COUNT} from '../constants.js';
+import {DEFAULT_SORTING_TYPE, MAX_DESTINATION_COUNT} from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import {displayMonthDay} from '../utils/date.js';
 import {sortPoints} from '../utils/sorting-values.js';
 
+const getDestinationName = (point, destinations) => {
+  const destination = destinations.find((item) => item.id === point.destination);
+  return destination ? destination.name : null;
+};
+
+const getDestinationNames = (points, destinations) => points.map((point) => getDestinationName(point, destinations));
+
 const renderTitle = (points, destinations) => {
-  const sortedPoints = sortPoints(points, defaultSortingType);
-  const destinationNames = sortedPoints.map((point) => destinations.find((destination) => point.destination === destination.id))
-    .map((destination) => destination.name);
+  const sortedPoints = sortPoints(points, DEFAULT_SORTING_TYPE);
+
+  const destinationNames = getDestinationNames(sortedPoints, destinations);
 
   if (destinationNames.length > MAX_DESTINATION_COUNT) {
     return `${destinationNames[0]} —...— ${destinationNames[destinationNames.length - 1]}`;
@@ -16,7 +23,7 @@ const renderTitle = (points, destinations) => {
 };
 
 const renderDates = (points) => {
-  const sortedPoints = sortPoints(points, defaultSortingType);
+  const sortedPoints = sortPoints(points, DEFAULT_SORTING_TYPE);
   const datesStart = sortedPoints.map((point) => point.dateFrom);
   const datesEnd = sortedPoints.map((point) => point.dateTo);
   const tripStart = displayMonthDay(datesStart[0]);

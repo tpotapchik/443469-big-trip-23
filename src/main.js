@@ -16,8 +16,8 @@ pointModel.init();
 
 const tripInfoPresenter = new TripInfoPresenter(pointModel);
 const filterPresenter = new FilterPresenter(pointModel, filterModel);
-const generatePresenter = new GeneralPresenter(pointModel, filterModel);
+const generalPresenter = new GeneralPresenter(pointModel, filterModel);
 
 tripInfoPresenter.init();
 filterPresenter.init();
-generatePresenter.init();
+generalPresenter.init();

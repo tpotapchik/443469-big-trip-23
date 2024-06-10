@@ -36,7 +36,7 @@ const createImageItemTemplate = (src, description) => `
   <img class="event__photo" src="${src}" alt="${description}">
 `;
 
-const setButtonCopy = (id, isDeleting) => {
+const setButtonText = (id, isDeleting) => {
   if (!id) {
     return 'Cancel';
   }
@@ -55,7 +55,7 @@ const createEditPointTemplate = (state, allDestinations) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event ${type} icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
@@ -81,10 +81,10 @@ const createEditPointTemplate = (state, allDestinations) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-${id}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormat.DATE_TIME)}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${displayDateTime(dateFrom, DateFormat.DATE_TIME)}" ${isDisabled ? 'disabled' : ''} required>
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormat.DATE_TIME)}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${displayDateTime(dateTo, DateFormat.DATE_TIME)}" ${isDisabled ? 'disabled' : ''} required>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -96,7 +96,7 @@ const createEditPointTemplate = (state, allDestinations) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-        <button class="event__reset-btn" type="reset" >${setButtonCopy(id, isDeleting)}</button>
+        <button class="event__reset-btn" type="reset" >${setButtonText(id, isDeleting)}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
@@ -162,18 +162,18 @@ export default class EditPoint extends AbstractStatefulView {
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#editRollUpHandler);
+      .addEventListener('click', this.#formRollUpHandler);
 
     this.element.querySelector('.event__type-group')
-      .addEventListener('change', this.#eventTypeHandler);
+      .addEventListener('change', this.#eventTypeChangeHandler);
 
     this.element.querySelector('.event__input--destination')
-      .addEventListener('change', this.#destinationTypeHandler);
+      .addEventListener('change', this.#destinationTypeChangeHandler);
 
-    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeSelectedOffersHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#selectedOffersChangeHandler);
 
     this.element.querySelector('.event__input--price')
-      .addEventListener('input', this.#priceInputHandler);
+      .addEventListener('input', this.#priceInputChangeHandler);
 
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
 
@@ -217,7 +217,7 @@ export default class EditPoint extends AbstractStatefulView {
       {
         ...datePickerOptions,
         maxDate: this._state.point.dateTo,
-        onChange: this.#changeDateHandler('dateFrom')
+        onChange: this.#dateChangeHandler('dateFrom')
       }
     );
 
@@ -226,12 +226,12 @@ export default class EditPoint extends AbstractStatefulView {
       {
         ...datePickerOptions,
         minDate: this._state.point.dateFrom,
-        onChange: this.#changeDateHandler('dateTo')
+        onChange: this.#dateChangeHandler('dateTo')
       }
     );
   };
 
-  #changeDateHandler = (date) => ([userDate]) => {
+  #dateChangeHandler = (date) => ([userDate]) => {
     this._setState({
       point: {
         ...this._state.point,
@@ -246,7 +246,7 @@ export default class EditPoint extends AbstractStatefulView {
     }
   };
 
-  #eventTypeHandler = (evt) => {
+  #eventTypeChangeHandler = (evt) => {
     evt.preventDefault();
     const newType = evt.target.value;
     const typeOffers = this.#allOffers.find((offer) => offer.type === newType);
@@ -261,7 +261,7 @@ export default class EditPoint extends AbstractStatefulView {
     });
   };
 
-  #destinationTypeHandler = (evt) => {
+  #destinationTypeChangeHandler = (evt) => {
     evt.preventDefault();
     const newDestination = evt.target.value;
     const typeDestination = this.#allDestinations.find((destination) => destination.name === newDestination);
@@ -277,7 +277,7 @@ export default class EditPoint extends AbstractStatefulView {
     });
   };
 
-  #priceInputHandler = (evt) => {
+  #priceInputChangeHandler = (evt) => {
     this._setState({
       point: {
         ...this._state.point,
@@ -286,7 +286,7 @@ export default class EditPoint extends AbstractStatefulView {
     });
   };
 
-  #changeSelectedOffersHandler = () => {
+  #selectedOffersChangeHandler = () => {
     const selectedOffers = this.element.querySelectorAll('.event__offer-checkbox:checked');
     this._setState({
       point: {
@@ -303,7 +303,7 @@ export default class EditPoint extends AbstractStatefulView {
     }
   };
 
-  #editRollUpHandler = (evt) => {
+  #formRollUpHandler = (evt) => {
     evt.preventDefault();
     if (this.#handleEditClose) {
       this.#handleEditClose(EditPoint.parseStateToPoint(this._state));

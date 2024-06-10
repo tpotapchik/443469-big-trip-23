@@ -7,7 +7,7 @@ const createTripMessageTemplate = (message, filterType) => {
   return `<p class="trip-events__msg">${message || filterMessage}</p>`;
 };
 
-export default class EmptyTripMessage extends AbstractView {
+export default class EmptyMessage extends AbstractView {
   #message = null;
   #filterType = null;
 

@@ -6,7 +6,7 @@ const SortingType = {
   OFFERS: 'offers'
 };
 
-const defaultSortingType = SortingType.DAY;
+const DEFAULT_SORTING_TYPE = SortingType.DAY;
 
 const FilterType = {
   EVERYTHING: 'everything',
@@ -22,7 +22,7 @@ const FilterMessage = {
   [FilterType.PAST]: 'There are no past events now'
 };
 
-const EmptyMessage = {
+const EmptyMessageText = {
   FAILED_LOAD: 'Failed to load latest route information',
   LOADING: 'Loading...'
 };
@@ -96,12 +96,12 @@ export {
   Mode,
   EVENT_TYPES,
   SortingType,
-  defaultSortingType,
+  DEFAULT_SORTING_TYPE,
   DateFormat,
   UserAction,
   UpdateType,
   DEFAULT_POINT,
-  EmptyMessage,
+  EmptyMessageText,
   Method,
   END_POINT,
   AUTHORIZATION,
