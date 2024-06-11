@@ -1,13 +1,13 @@
 import {SortingType} from '../constants.js';
 
 const sortBy = {
-  [SortingType.DAY]: (points) => [...points].sort((a, b) => new Date(a.dateFrom) - new Date(b.dateFrom)),
-  [SortingType.TIME]: (points) => [...points].sort((a, b) => {
-    const durationA = new Date(a.dateTo).getTime() - new Date(a.dateFrom).getTime();
-    const durationB = new Date(b.dateTo).getTime() - new Date(b.dateFrom).getTime();
-    return durationB - durationA;
+  [SortingType.DAY]: (points) => [...points].sort((firstPoint, secondPoint) => new Date(firstPoint.dateFrom) - new Date(secondPoint.dateFrom)),
+  [SortingType.TIME]: (points) => [...points].sort((firstPoint, secondPoint) => {
+    const durationFirstPoint = new Date(firstPoint.dateTo).getTime() - new Date(firstPoint.dateFrom).getTime();
+    const durationSecondPoint = new Date(secondPoint.dateTo).getTime() - new Date(secondPoint.dateFrom).getTime();
+    return durationSecondPoint - durationFirstPoint;
   }),
-  [SortingType.PRICE]: (points) => [...points].sort((a, b) => b.basePrice - a.basePrice),
+  [SortingType.PRICE]: (points) => [...points].sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice),
 };
 
 export const sortPoints = (points, sortType) => sortBy[sortType](points);
