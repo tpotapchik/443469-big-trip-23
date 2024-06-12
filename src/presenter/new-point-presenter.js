@@ -7,7 +7,7 @@ export default class NewPointPresenter {
   #handleDataChange = null;
   #handleDestroy = null;
   #pointModel = null;
-  #point = [];
+  #point = null;
 
   constructor({pointModel, onDataChange, onDestroy}) {
     this.#pointModel = pointModel;
@@ -31,7 +31,6 @@ export default class NewPointPresenter {
       () => this.#hideEditorPoint(),
       () => this.#handleCancelClick()
     );
-
     const newFormContainer = document.querySelector('.trip-events__list');
     render(this.#pointEditorComponent, newFormContainer, RenderPosition.AFTERBEGIN);
 

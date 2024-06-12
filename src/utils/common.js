@@ -1,2 +1,2 @@
-const capitalizeLetter = (someString) => someString[0].toUpperCase() + someString.slice(1);
+const capitalizeLetter = (value) => value[0].toUpperCase() + value.slice(1);
 export {capitalizeLetter};

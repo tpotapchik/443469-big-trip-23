@@ -162,7 +162,7 @@ export default class EditPoint extends AbstractStatefulView {
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#formRollUpHandler);
+      .addEventListener('click', this.#formRollUpClickHandler);
 
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#eventTypeChangeHandler);
@@ -303,7 +303,7 @@ export default class EditPoint extends AbstractStatefulView {
     }
   };
 
-  #formRollUpHandler = (evt) => {
+  #formRollUpClickHandler = (evt) => {
     evt.preventDefault();
     if (this.#handleEditClose) {
       this.#handleEditClose(EditPoint.parseStateToPoint(this._state));
